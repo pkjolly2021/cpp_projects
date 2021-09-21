@@ -1,0 +1,23 @@
+
+#include <iostream>
+
+using namespace std;
+
+template<typename T>
+T add(T dat)
+{
+    return(dat);
+}
+
+template<typename T, typename... Args>
+T add(T dat, Args...arg)
+{
+    return(dat + add(arg...));
+}
+
+int main()
+{
+    //cout<<"Hello World";
+    std::cout<<"sum is: "<<add(1,2,3,4,5)<<std::endl;
+    return 0;
+}
