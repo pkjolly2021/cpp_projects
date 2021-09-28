@@ -1,0 +1,45 @@
+#include <iostream>
+using namespace std;
+#include  <functional>
+#include <vector>
+
+template<typename T>
+void fun(T fun )
+{
+    fun();
+}
+
+int fun_chk (std::function<const int(int)> fun , std::vector<int>& vec )
+{
+    bool val;
+   //loop vector and retrun treu if calue is 5
+   for(auto x : vec)
+    {
+      cout<<"inside vec val "<<x<<std::endl;
+      val = fun(x);
+       cout<<"  val is: "<<val<<std::endl;
+    }
+   return val;
+}
+
+
+
+int main()
+{
+    int cnnnt;
+    std::vector<int> my_v{4,5,6,5,5};
+    auto a = [&cnnnt](int x)->bool { if(x == 5){
+                      //static int cnt;
+                      cout<<"inside 5 got\r\n";
+                      cnnnt++;
+                    }
+                  };
+    
+    auto lamb = [](){std::cout<<"lambda"<<std::endl;};
+    //cout<<"Hello World";
+    fun(lamb);
+    fun_chk(a, my_v);
+   cout<<"cnnnt:- "<<cnnnt;
+   
+    return 0;
+}

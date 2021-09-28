@@ -1,0 +1,1 @@
+https://docs.microsoft.com/en-us/cpp/cpp/lambda-expressions-in-cpp?view=msvc-160#:~:text=A%20lambda%20can%20introduce%20new,by%20value%20or%20by%20reference.
