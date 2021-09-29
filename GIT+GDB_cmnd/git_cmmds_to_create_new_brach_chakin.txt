@@ -1,0 +1,1966 @@
+https://convertlive.com/u/convert/megabytes/to/bytes#1
+
+1. git clone http://princek.jolly@10.47.1.33:8080/TEL_AUTOSAR_IP && (cd TEL_AUTOSAR_IP && curl -kLo `git rev-parse --git-dir`/hooks/commit-msg    http://princek.jolly@10.47.1.33:8080/tools/hooks/commit-msg; chmod +x `git rev-parse --git-dir`/hooks/commit-msg)
+
+2. Go to folder and switch branch to FuctionalClusters
+    git checkout -b FunctionalClusters --track remotes/origin/FunctionalClusters
+
+3. Open git bash and do git pull
+
+4. git branch <new bracnh name>
+
+5. git checkout file_oper_changes // to further chnages will be appplied to this branch, not FunctioanlClusters
+
+6. git status // check for current chnages in branch
+
+7  git diff // to get the dif of changed files in branch
+
+8. Do the chnages in file
+
+9.  git add .   // add all the changes before commit
+
+10. git commit -m "<COMMNETS in DOUBLE CORDS>" // will list all the changes if changed 
+
+11. git status //to get ststus of git
+
+12.  git checkout FunctionalClusters // move to functional clusters
+
+13. git pull 
+
+14. git checkout <NEW BRANCH CREATED>  
+
+15. git rebase FunctionalClusters // move the changes from new branch to Functional clusters
+
+14  git push origin HEAD:refs/for/FunctionalClusters    //push data to main branch
+ 15 git reset --hard origin/FunctionalClusters // to reset git
+=======================================================================CMMDS FOR REERANCE =============================================
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git branch file_oper_changes
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git checkout file_oper_changes
+Switched to branch 'file_oper_changes'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git status
+
+On branch file_oper_changes
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git status
+On branch file_oper_changes
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git diff
+diff --git a/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp b/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+index 5c6af8d737..7c7552a929 100755
+--- a/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
++++ b/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+@@ -44,40 +44,34 @@ const char *SERV_DISCO_FILE = "//tmp//ipcshm_sservice.txt";
+ //search for SID-INSID in file and return a pair<pid, linenumber>
+ //Line number can be used  to delete the specific service name when
+ //service is stop offering.
+-std::pair<int32_t, int32_t>  service_discovery::search_for_service(const char *si_data)
++std::pair<int32_t, int32_t>  service_discovery::search_for_service(const char *si_data, bool get_only_line_no)
+ {
+-    int32_t line_no = 0;
+-    int32_t proc_ID = 0;
+-    std::ifstream ifs { SERV_DISCO_FILE };
+-    if (ifs.is_open())
+-    {
+-        int32_t totalRead = 0;
+-        std::string buffer{20, '\0'};
+-        while (!ifs.eof())
++int32_t line_no = 0;
++int32_t proc_ID = 0;
++std::ifstream file(SERV_DISCO_FILE);
++   if (file.is_open())
++   {
++     std::string buffer;
++     while (std::getline(file, buffer))
++     {
++        size_t bufferlen = buffer.length();
++        line_no++;
++        buffer[bufferlen - 1] = buffer[bufferlen - 1] == '\n' ? '\0' : buffer[bufferlen - 1];
++        if (std::string::npos != buffer.find(si_data) && (!get_only_line_no))
+         {
+-            totalRead = ifs.readsome(&buffer[0], static_cast<ssize_t>(buffer.size()));
+-            /*
+-             * Trim new line character from last if exists.
+-             */
+-            if (totalRead > 0)
++            std::string pid{};
++            size_t i = 0;
++            while ((buffer[i] != '-') && (buffer[i] != '\0'))
+             {
+-                size_t bufferlen = static_cast<size_t>(totalRead);
+-                buffer[bufferlen - 1] = buffer[bufferlen - 1] == '\n' ? '\0' : buffer[bufferlen - 1];
+-                if (std::string::npos != buffer.find(si_data))
+-                {
+-                    std::string pid{};
+-                    size_t i = 0;
+-                    while ((buffer[i] != '-') || (buffer[i] != '\0'))
+-                    {
+-                        pid.push_back(buffer[i]);
+-                    }
+-                    proc_ID = stoi(pid);
+-                }
++               pid.push_back(buffer[i++]);
+             }
++            proc_ID = stoi(pid);
++            break;
+         }
+-        ifs.close();
+-    }
+-    return (std::make_pair( proc_ID,line_no));
++      }
++      file.close();
++   }
++return (std::make_pair( proc_ID,line_no));
+ }
+
+ //open for append the service details..
+@@ -96,7 +90,7 @@ void service_discovery::write_to_file(std::string &serverdata)
+     {
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git commit -m "Fixfor search for service and data tranmssion issue"
+On branch file_oper_changes
+Changes not staged for commit:
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+no changes added to commit
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git staus
+git: 'staus' is not a git command. See 'git --help'.
+
+The most similar command is
+        status
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git status
+On branch file_oper_changes
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git add .
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git commit -m "Fix for search for service and data transmission issue"
+[file_oper_changes a6f61c3a37] Fix for search for service and data transmission issue
+ 3 files changed, 49 insertions(+), 53 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git status
+On branch file_oper_changes
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git checkout FunctionalClusters
+Switched to branch 'FunctionalClusters'
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git pull
+Already up to date.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git checkout file_oper_changes
+Switched to branch 'file_oper_changes'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git rebase FunctionalClusters
+Current branch file_oper_changes is up to date.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git push origin HEAD:refs/for/FunctionalClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.71 KiB | 195.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188245, done
+remote: Processing changes: new: 1, refs: 1, done
+remote:
+remote: New Changes:
+remote:   http://10.47.1.33:8080/14703 Fix for search for service and data transmission issue
+remote:
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ * [new branch]            HEAD -> refs/for/FunctionalClusters
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$
+=========================================================================================TO COMMIT AMEND CHANGES=================================================
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git status
+On branch file_oper_changes
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git checkout FunctionalClusters
+Switched to branch 'FunctionalClusters'
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git pull
+remote: Counting objects: 1150, done
+remote: Finding sources: 100% (670/670)
+Rremote: Total 670 (delta 389), reused 632 (delta 389)                :  99% (664/670)
+Receiving objects: 100% (670/670), 1.32 MiB | 10.35 MiB/s, done.
+Resolving deltas: 100% (389/389), completed with 259 local objects.
+From http://10.47.1.33:8080/TEL_AUTOSAR_IP
+   d5a824dc49..0219e5973f  FunctionalClusters     -> origin/FunctionalClusters
+   86cb572c94..dd866bef0d  BSW_ASIL_D             -> origin/BSW_ASIL_D
+   74ed66603e..bf0ed2bc03  GWM_Dev_Classic        -> origin/GWM_Dev_Classic
+   7afd3b1731..e3345d50df  Tool_Dev_19_11_Classic -> origin/Tool_Dev_19_11_Classic
+   6bb0b58e3e..b9a7956cfb  Tool_Dev_19_11_Migration -> origin/Tool_Dev_19_11_Migration
+Updating d5a824dc49..0219e5973f
+Fast-forward
+ .../public/ara/crypto/common/custom_disposable.h   |   9 +-
+ .../public/ara/crypto/common/trusted_container.h   |   2 +-
+ .../include/public/ara/crypto/common/utility.h     |   8 +-
+
+ .../key-value-storage/key_value_storage_impl.cpp   |   2 +-
+ .../src/key-value-storage/key_value_storage_impl.h |   2 +-
+ .../key-value-storage/key_value_storage_schema.cpp |   4 +-
+ .../per/source/src/kvsparser/json_read_handler.cpp |  20 ++
+ .../per/source/src/kvsparser/json_read_handler.h   |   9 +-
+ .../src/manifestaccess/manifest_implementation.cpp |   4 +-
+
+ .../19-11/ara-api/rest/source/src/ogm/uri.cpp      |  14 +-
+ .../19-11/ara-api/rest/source/src/ogm/uuid.cpp     |  14 +-
+ .../19-11/ara-api/rest/source/src/ogm/value.cpp    |   4 +-
+ .../ara-api/rest/source/src/routing/match.cpp      |   4 +-
+ .../ara-api/rest/source/src/routing/matches.cpp    |  82 ++---
+ .../ara-api/rest/source/src/routing/pattern.cpp    | 120 +++----
+ .../ara-api/rest/source/src/routing/route.cpp      |   8 +-
+ .../ara-api/rest/source/src/routing/router.cpp     |  42 +--
+ .../rest/source/src/serialize/serialize.cpp        | 216 ++++++-------
+ .../19-11/ara-api/rest/source/src/server.cpp       | 188 ++++++-----
+ .../19-11/ara-api/rest/source/src/uri.cpp          | 358 ++++++++++-----------
+ .../19-11/ara-api/rest/source/src/uuid.cpp         |  82 ++---
+ 148 files changed, 2200 insertions(+), 1947 deletions(-)
+ create mode 100755 Autosar_Adaptive/19-11/ara-api/crypto/source/src/cryp/key_diversifier_ctx.cpp
+ create mode 100755 Autosar_Adaptive/19-11/ara-api/crypto/source/src/cryp/symmetric_key_wrapper_ctx.cpp
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git branch -D file_oper_changes
+Deleted branch file_oper_changes (was a6f61c3a37).
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git branch temp_branch
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git checkout temp_branch
+Switched to branch 'temp_branch'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git fetch http://princek.jolly@10.47.1.33:8080/a/TEL_AUTOSAR_IP refs/changes/03/14703/1 && git cherry-pick FETCH_HEAD
+From http://10.47.1.33:8080/a/TEL_AUTOSAR_IP
+ * branch                  refs/changes/03/14703/1 -> FETCH_HEAD
+[temp_branch 41b22c2c38] Fix for search for service and data transmission issue
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 49 insertions(+), 53 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git rebase FunctionalClusters
+Current branch temp_branch is up to date.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git status
+On branch temp_branch
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git add .
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git status
+On branch temp_branch
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git commit --amend
+[temp_branch f15962ae66] Fix for search for service and data transmission issue
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 55 insertions(+), 58 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git push origin HEAD:refs/for/FunctionalClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.83 KiB | 98.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188536, done
+remote: Processing changes: updated: 1, refs: 1, done
+remote:
+remote: Updated Changes:
+remote:   http://10.47.1.33:8080/14703 Fix for search for service and data transmission issue
+remote:
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ * [new branch]            HEAD -> refs/for/FunctionalClusters
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git checkout FunctionalClusters
+Switched to branch 'FunctionalClusters'
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git pull
+Already up to date.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git branch modified
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git checkout modified
+Switched to branch 'modified'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git fetch http://princek.jolly@10.47.1.33:8080/a/TEL_AUTOSAR_IP refs/changes/03/14703/2 && git cherry-pick FETCH_HEAD
+From http://10.47.1.33:8080/a/TEL_AUTOSAR_IP
+ * branch                  refs/changes/03/14703/2 -> FETCH_HEAD
+[modified 7abb563134] Fix for search for service and data transmission issue
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 55 insertions(+), 58 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git diff
+diff --git a/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h b/Autosar_Adaptive/19-11/ara-api/com/source/in
+clude/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+index ca52f3e9b1..236d0e1518 100644
+--- a/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
++++ b/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+@@ -490,7 +490,6 @@ private:
+                std::shared_ptr<ipcsrvc::payload> payload = std::make_shared<ipcsrvc::payload_impl>();
+                payload->set_data(dat_vector);
+                common::Deserializer<IPCSrvcEventImplT> deserializer(payload->get_data(), payload->get_length());
+-
+                if (((m_iPCSrvcQueue.size() > 0) && (m_iPCSrvcCacheSize == m_iPCSrvcQueue.size())))
+                {
+                    m_iPCSrvcQueue.pop_front();
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git rebase FunctionalClusters
+Cannot rebase: You have unstaged changes.
+Please commit or stash them.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git add .
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+
+-m "<COMMNETS in DOUBLE CORDS>" 
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git commit --amend
+[modified 4171b318cb] Fix for search for service and data transmission issue
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 54 insertions(+), 58 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git push origin HEAD:refs/for/FunctionClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.82 KiB | 155.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188536, done
+remote: Processing changes: refs: 1, done
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ ! [remote rejected]       HEAD -> refs/for/FunctionClusters (branch FunctionClusters not found)
+error: failed to push some refs to 'http://princek.jolly@10.47.1.33:8080/TEL_AUTOSAR_IP'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git push origin HEAD:refs/for/FunctionalClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.82 KiB | 109.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188536, done
+remote: Processing changes: updated: 1, refs: 1, done
+remote:
+remote: Updated Changes:
+remote:   http://10.47.1.33:8080/14703 Fix for search for service and data transmission issue
+remote:
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ * [new branch]            HEAD -> refs/for/FunctionalClusters
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+
+============================================================GIT REASE=============================================
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git status
+On branch file_oper_changes
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (file_oper_changes)
+$ git checkout FunctionalClusters
+Switched to branch 'FunctionalClusters'
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git pull
+remote: Counting objects: 1150, done
+remote: Finding sources: 100% (670/670)
+Rremote: Total 670 (delta 389), reused 632 (delta 389)                :  99% (664/670)
+Receiving objects: 100% (670/670), 1.32 MiB | 10.35 MiB/s, done.
+Resolving deltas: 100% (389/389), completed with 259 local objects.
+From http://10.47.1.33:8080/TEL_AUTOSAR_IP
+   d5a824dc49..0219e5973f  FunctionalClusters     -> origin/FunctionalClusters
+   86cb572c94..dd866bef0d  BSW_ASIL_D             -> origin/BSW_ASIL_D
+   74ed66603e..bf0ed2bc03  GWM_Dev_Classic        -> origin/GWM_Dev_Classic
+   7afd3b1731..e3345d50df  Tool_Dev_19_11_Classic -> origin/Tool_Dev_19_11_Classic
+   6bb0b58e3e..b9a7956cfb  Tool_Dev_19_11_Migration -> origin/Tool_Dev_19_11_Migration
+Updating d5a824dc49..0219e5973f
+Fast-forward
+ .../public/ara/crypto/common/custom_disposable.h   |   9 +-
+ .../public/ara/crypto/common/trusted_container.h   |   2 +-
+ .../include/public/ara/crypto/common/utility.h     |   8 +-
+ .../ara/crypto/cryp/authn_stream_cipher_ctx.h      |   1 -
+ .../include/public/ara/crypto/cryp/cryp_helper.h   |   3 +-
+ .../public/ara/crypto/cryp/crypto_context.h        |   2 +-
+ .../public/ara/crypto/cryp/crypto_primitive_id.h   |   2 +-
+ .../ara/crypto/cryp/crypto_provider_derived.h      |   1 -
+ .../public/ara/crypto/cryp/decryptor_private_ctx.h |   1 -
+ .../public/ara/crypto/cryp/domain_parameters.h     |   5 +-
+ .../public/ara/crypto/cryp/encryptor_public_ctx.h  |   1 -
+ .../public/ara/crypto/cryp/hash_function_ctx.h     |   3 +-
+ .../ara/crypto/cryp/key_agreement_private_ctx.h    |   2 +-
+ .../cryp/key_agreement_private_ctx_derived.h       |   2 +-
+ .../cryp/key_decapsulator_private_ctx_derived.h    |   1 -
+ .../cryp/key_derivation_function_ctx_derived.h     |   3 +-
+ .../public/ara/crypto/cryp/key_diversifier_ctx.h   |  77 +----
+ .../ara/crypto/cryp/key_encapsulator_public_ctx.h  |   2 +-
+ .../cryp/key_encapsulator_public_ctx_derived.h     |   1 -
+ .../include/public/ara/crypto/cryp/keyed_context.h |   2 +-
+ .../ara/crypto/cryp/password_cache_derived.h       |   3 -
+ .../public/ara/crypto/cryp/private_key_context.h   |   2 +-
+ .../public/ara/crypto/cryp/public_key_context.h    |   2 +-
+ .../public/ara/crypto/cryp/random_generator_ctx.h  |   1 -
+ .../public/ara/crypto/cryp/signer_private_ctx.h    |   2 +-
+ .../ara/crypto/cryp/symmetric_block_cipher_ctx.h   |   3 +-
+ .../cryp/symmetric_block_cipher_ctx_derived.h      |   2 +-
+ .../include/public/ara/crypto/cryp/symmetric_key.h |   2 +-
+ .../public/ara/crypto/cryp/symmetric_key_context.h |   2 +-
+ .../ara/crypto/cryp/symmetric_key_wrapper_ctx.h    |  83 +----
+ .../ara/crypto/cryp/x509_request_signer_ctx.h      |   2 +-
+ .../crypto/cryp/x509_request_signer_ctx_derived.h  |   1 -
+ .../public/ara/crypto/cryp/x509_signature.h        |   4 +-
+ .../include/public/ara/crypto/x509/x509_dn.h       |   1 -
+ .../ara-api/crypto/source/src/common/utility.cpp   |  43 ++-
+ .../ara-api/crypto/source/src/cryp/CMakeLists.txt  |   2 +
+ .../source/src/cryp/authn_stream_cipher_ctx.cpp    |   3 +-
+ .../ara-api/crypto/source/src/cryp/cryp_helper.cpp |  29 +-
+ .../source/src/cryp/crypto_provider_derived.cpp    | 192 ++++++-----
+ .../source/src/cryp/decryptor_private_ctx.cpp      |   2 +-
+ .../source/src/cryp/domain_parameters_derived.cpp  |   1 +
+ .../source/src/cryp/encryptor_public_ctx.cpp       |   2 +-
+ .../cryp/key_derivation_function_ctx_derived.cpp   |  10 +-
+ .../crypto/source/src/cryp/key_diversifier_ctx.cpp |  93 ++++++
+ .../src/cryp/key_diversifier_ctx_derived.cpp       |  27 +-
+ .../cryp/key_encapsulator_public_ctx_derived.cpp   |   5 +-
+ .../source/src/cryp/message_authn_code_ctx.cpp     |   1 -
+ .../src/cryp/random_generator_ctx_derived.cpp      |   1 -
+ .../crypto/source/src/cryp/secret_seed_derived.cpp |   1 -
+ .../source/src/cryp/signer_private_ctx_derived.cpp |   1 -
+ .../cryp/symmetric_block_cipher_ctx_derived.cpp    |   1 -
+ .../source/src/cryp/symmetric_key_wrapper_ctx.cpp  | 104 ++++++
+ .../src/cryp/symmetric_key_wrapper_ctx_derived.cpp |  18 +-
+ .../src/cryp/verifier_public_ctx_derived.cpp       |   2 -
+ .../crypto/source/src/cryp/x509_signature.cpp      |   5 +-
+ .../source/src/cryp/x509_signature_derived.cpp     |   4 +-
+ .../crypto/source/src/x509/cert_sign_request.cpp   |   2 +-
+ .../ara-api/crypto/source/src/x509/x509_dn.cpp     |   6 -
+ .../source/include/public/ara/nm/NmNetworkHandle.h |   4 +
+ .../19-11/ara-api/nm/source/src/NmConfigParser.cpp | 260 ++++++++-------
+ .../ara-api/nm/source/src/NmNetworkHandle.cpp      |  15 +
+ .../include/internal/ara/per/kvstype/kvs_type.h    |  64 +++-
+ .../internal/ara/per/serializer/classdescriptor.h  |   4 +-
+ .../internal/ara/per/serializer/kvsreader.h        |  49 ++-
+ .../internal/ara/per/serializer/kvswriter.h        |   4 +-
+ .../internal/ara/per/serializer/serializer.h       |  34 +-
+ .../include/private/utility/filesytemhelper.h      |   2 +-
+ .../per/source/include/private/utility/version.h   |  19 +-
+ .../include/public/ara/per/basic_operations.h      |   6 +-
+ .../source/src/fileaccess/basic_file_stream.cpp    |   2 +-
+ .../per/source/src/fileaccess/basic_file_stream.h  |   9 +-
+ .../src/fileaccess/encrypted_file_stream.cpp       |   2 +-
+ .../source/src/fileaccess/encrypted_file_stream.h  |   2 +-
+ .../source/src/fileaccess/file_storage_impl.cpp    |  17 +-
+ .../source/src/fileaccess/file_storage_updater.cpp |   4 +-
+ .../per/source/src/fileaccess/file_stream.h        |   2 +-
+ .../source/src/fileaccess/read_accessor_impl.cpp   |   4 +-
+ .../per/source/src/fileaccess/read_accessor_impl.h |   2 +-
+ .../key-value-storage/key_value_storage_impl.cpp   |   2 +-
+ .../src/key-value-storage/key_value_storage_impl.h |   2 +-
+ .../key-value-storage/key_value_storage_schema.cpp |   4 +-
+ .../per/source/src/kvsparser/json_read_handler.cpp |  20 ++
+ .../per/source/src/kvsparser/json_read_handler.h   |   9 +-
+ .../src/manifestaccess/manifest_implementation.cpp |   4 +-
+ .../ara-api/per/source/src/update/update_impl.cpp  |  52 ++-
+ .../ara-api/per/source/src/utility/filesystem.cpp  |   4 +-
+ .../per/source/src/utility/filesytemhelper.cpp     | 215 ++++++-------
+ .../source/include/public/ara/rest/allocator.h     |  22 +-
+ .../rest/source/include/public/ara/rest/client.h   |   8 +-
+ .../source/include/public/ara/rest/client_types.h  |  10 +-
+ .../rest/source/include/public/ara/rest/config.h   |  66 ++--
+ .../source/include/public/ara/rest/exception.h     |  16 +-
+ .../rest/source/include/public/ara/rest/future.h   |  46 +--
+ .../rest/source/include/public/ara/rest/header.h   |  10 +-
+ .../source/include/public/ara/rest/httpclient.h    |  14 +-
+ .../source/include/public/ara/rest/httpserver.h    |  54 ++--
+ .../rest/source/include/public/ara/rest/iterator.h |  62 ++--
+ .../source/include/public/ara/rest/ogm/array.h     |  16 +-
+ .../rest/source/include/public/ara/rest/ogm/base.h |  18 +-
+ .../rest/source/include/public/ara/rest/ogm/copy.h |   2 +-
+ .../source/include/public/ara/rest/ogm/field.h     |   6 +-
+ .../rest/source/include/public/ara/rest/ogm/int.h  |   4 +-
+ .../rest/source/include/public/ara/rest/ogm/node.h |  10 +-
+ .../source/include/public/ara/rest/ogm/object.h    |  30 +-
+ .../rest/source/include/public/ara/rest/ogm/real.h |   4 +-
+ .../source/include/public/ara/rest/ogm/string.h    |   4 +-
+ .../rest/source/include/public/ara/rest/ogm/uri.h  |   4 +-
+ .../rest/source/include/public/ara/rest/ogm/uuid.h |   4 +-
+ .../source/include/public/ara/rest/ogm/value.h     |   2 +-
+ .../source/include/public/ara/rest/ogm/visit.h     |  20 +-
+ .../source/include/public/ara/rest/routing/match.h |  18 +-
+ .../include/public/ara/rest/routing/matches.h      |  12 +-
+ .../include/public/ara/rest/routing/pattern.h      |   2 +-
+ .../source/include/public/ara/rest/routing/route.h |   6 +-
+ .../include/public/ara/rest/routing/router.h       |   4 +-
+ .../include/public/ara/rest/serialize/serialize.h  |  21 +-
+ .../rest/source/include/public/ara/rest/server.h   |  98 +++---
+ .../rest/source/include/public/ara/rest/uri.h      |  72 ++---
+ .../rest/source/include/public/ara/rest/uuid.h     |  30 +-
+ .../19-11/ara-api/rest/source/src/allocator.cpp    |   8 +-
+ .../19-11/ara-api/rest/source/src/client.cpp       |  18 +-
+ .../19-11/ara-api/rest/source/src/client_types.cpp |  26 +-
+ .../19-11/ara-api/rest/source/src/config.cpp       | 134 ++++----
+ .../19-11/ara-api/rest/source/src/exception.cpp    |  24 +-
+ .../19-11/ara-api/rest/source/src/header.cpp       |  26 +-
+ .../19-11/ara-api/rest/source/src/httpclient.cpp   | 104 +++---
+ .../19-11/ara-api/rest/source/src/httpserver.cpp   | 216 ++++++-------
+ .../19-11/ara-api/rest/source/src/ogm/array.cpp    |  30 +-
+ .../19-11/ara-api/rest/source/src/ogm/base.cpp     |   6 +-
+ .../19-11/ara-api/rest/source/src/ogm/copy.cpp     |   2 +-
+ .../19-11/ara-api/rest/source/src/ogm/field.cpp    |  22 +-
+ .../19-11/ara-api/rest/source/src/ogm/int.cpp      |  10 +-
+ .../19-11/ara-api/rest/source/src/ogm/node.cpp     |  14 +-
+ .../19-11/ara-api/rest/source/src/ogm/object.cpp   |  48 +--
+ .../19-11/ara-api/rest/source/src/ogm/real.cpp     |  10 +-
+ .../19-11/ara-api/rest/source/src/ogm/string.cpp   |  12 +-
+ .../19-11/ara-api/rest/source/src/ogm/uri.cpp      |  14 +-
+ .../19-11/ara-api/rest/source/src/ogm/uuid.cpp     |  14 +-
+ .../19-11/ara-api/rest/source/src/ogm/value.cpp    |   4 +-
+ .../ara-api/rest/source/src/routing/match.cpp      |   4 +-
+ .../ara-api/rest/source/src/routing/matches.cpp    |  82 ++---
+ .../ara-api/rest/source/src/routing/pattern.cpp    | 120 +++----
+ .../ara-api/rest/source/src/routing/route.cpp      |   8 +-
+ .../ara-api/rest/source/src/routing/router.cpp     |  42 +--
+ .../rest/source/src/serialize/serialize.cpp        | 216 ++++++-------
+ .../19-11/ara-api/rest/source/src/server.cpp       | 188 ++++++-----
+ .../19-11/ara-api/rest/source/src/uri.cpp          | 358 ++++++++++-----------
+ .../19-11/ara-api/rest/source/src/uuid.cpp         |  82 ++---
+ 148 files changed, 2200 insertions(+), 1947 deletions(-)
+ create mode 100755 Autosar_Adaptive/19-11/ara-api/crypto/source/src/cryp/key_diversifier_ctx.cpp
+ create mode 100755 Autosar_Adaptive/19-11/ara-api/crypto/source/src/cryp/symmetric_key_wrapper_ctx.cpp
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git branch -D file_oper_changes
+Deleted branch file_oper_changes (was a6f61c3a37).
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git branch temp_branch
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git checkout temp_branch
+Switched to branch 'temp_branch'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git fetch http://princek.jolly@10.47.1.33:8080/a/TEL_AUTOSAR_IP refs/changes/03/14703/1 && git cherry-pick FETCH_HEAD
+From http://10.47.1.33:8080/a/TEL_AUTOSAR_IP
+ * branch                  refs/changes/03/14703/1 -> FETCH_HEAD
+[temp_branch 41b22c2c38] Fix for search for service and data transmission issue
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 49 insertions(+), 53 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git rebase FunctionalClusters
+Current branch temp_branch is up to date.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git status
+On branch temp_branch
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git add .
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git status
+On branch temp_branch
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git commit --amend
+[temp_branch f15962ae66] Fix for search for service and data transmission issue
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 55 insertions(+), 58 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git push origin HEAD:refs/for/FunctionalClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.83 KiB | 98.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188536, done
+remote: Processing changes: updated: 1, refs: 1, done
+remote:
+remote: Updated Changes:
+remote:   http://10.47.1.33:8080/14703 Fix for search for service and data transmission issue
+remote:
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ * [new branch]            HEAD -> refs/for/FunctionalClusters
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (temp_branch)
+$ git checkout FunctionalClusters
+Switched to branch 'FunctionalClusters'
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git pull
+Already up to date.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git branch modified
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git checkout modified
+Switched to branch 'modified'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git fetch http://princek.jolly@10.47.1.33:8080/a/TEL_AUTOSAR_IP refs/changes/03/14703/2 && git cherry-pick FETCH_HEAD
+From http://10.47.1.33:8080/a/TEL_AUTOSAR_IP
+ * branch                  refs/changes/03/14703/2 -> FETCH_HEAD
+[modified 7abb563134] Fix for search for service and data transmission issue
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 55 insertions(+), 58 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git diff
+diff --git a/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h b/Autosar_Adaptive/19-11/ara-api/com/source/in
+clude/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+index ca52f3e9b1..236d0e1518 100644
+--- a/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
++++ b/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+@@ -490,7 +490,6 @@ private:
+                std::shared_ptr<ipcsrvc::payload> payload = std::make_shared<ipcsrvc::payload_impl>();
+                payload->set_data(dat_vector);
+                common::Deserializer<IPCSrvcEventImplT> deserializer(payload->get_data(), payload->get_length());
+-
+                if (((m_iPCSrvcQueue.size() > 0) && (m_iPCSrvcCacheSize == m_iPCSrvcQueue.size())))
+                {
+                    m_iPCSrvcQueue.pop_front();
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git rebase FunctionalClusters
+Cannot rebase: You have unstaged changes.
+Please commit or stash them.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git add .
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git commit --amend
+[modified 4171b318cb] Fix for search for service and data transmission issue
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 54 insertions(+), 58 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git push origin HEAD:refs/for/FunctionClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.82 KiB | 155.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188536, done
+remote: Processing changes: refs: 1, done
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ ! [remote rejected]       HEAD -> refs/for/FunctionClusters (branch FunctionClusters not found)
+error: failed to push some refs to 'http://princek.jolly@10.47.1.33:8080/TEL_AUTOSAR_IP'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git push origin HEAD:refs/for/FunctionalClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.82 KiB | 109.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188536, done
+remote: Processing changes: updated: 1, refs: 1, done
+remote:
+remote: Updated Changes:
+remote:   http://10.47.1.33:8080/14703 Fix for search for service and data transmission issue
+remote:
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ * [new branch]            HEAD -> refs/for/FunctionalClusters
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ \
+> q
+bash: q: command not found
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git log -3
+commit 4171b318cb9108b08ddf34458ec1c4aedc4fc95b (HEAD -> modified)
+Author: princek.jolly <princek.jolly@tataelxsi.co.in>
+Date:   Wed Jul 8 10:22:39 2020 +0530
+
+    Fix for search for service and data transmission issue
+
+    Change-Id: Ic1bca270a80eb95c1300553269f9a1e3abdd664e
+
+commit 0219e5973f3c729381645eaec23ca5ad155f3c77 (origin/FunctionalClusters, FunctionalClusters)
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Wed Jul 8 19:17:50 2020 +0530
+
+    Crypto : delete() fix
+
+    Change-Id: I4de818f9c62e91d779e13e49ca6b18948dc0cf7b
+
+commit fc39c0bf10ef43edcc4d8f3254cdcbf4a3af655d
+Author: dashlin.jeno <dashlin.jeno@tataelxsi.co.in>
+Date:   Wed Jul 8 18:31:40 2020 +0530
+
+    Restore backup - bug fix
+
+    Change-Id: I530300eb5066d45445b799892fedcc0e1a3004b7
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git rebase FunctionalClusters
+Current branch modified is up to date.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git log
+commit 4171b318cb9108b08ddf34458ec1c4aedc4fc95b (HEAD -> modified)
+Author: princek.jolly <princek.jolly@tataelxsi.co.in>
+Date:   Wed Jul 8 10:22:39 2020 +0530
+
+    Fix for search for service and data transmission issue
+
+    Change-Id: Ic1bca270a80eb95c1300553269f9a1e3abdd664e
+
+commit 0219e5973f3c729381645eaec23ca5ad155f3c77 (origin/FunctionalClusters, FunctionalClusters)
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Wed Jul 8 19:17:50 2020 +0530
+
+    Crypto : delete() fix
+
+    Change-Id: I4de818f9c62e91d779e13e49ca6b18948dc0cf7b
+
+commit fc39c0bf10ef43edcc4d8f3254cdcbf4a3af655d
+Author: dashlin.jeno <dashlin.jeno@tataelxsi.co.in>
+Date:   Wed Jul 8 18:31:40 2020 +0530
+
+    Restore backup - bug fix
+
+    Change-Id: I530300eb5066d45445b799892fedcc0e1a3004b7
+
+commit 51fa67f52863e0da142b70642506b9dc6eae4fd7
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Wed Jul 8 15:19:38 2020 +0530
+
+    Crypto : bug fix
+
+    Change-Id: I54d8906f5bef73175acacd8169846607f4a112fe
+
+commit 99bf76c7c878f749bcedae9e4eabbb71a2ae1a53
+Author: BlessyAntony <blessyk.a@tataelxsi.co.in>
+Date:   Wed Jul 8 14:05:22 2020 +0530
+
+    NM : changes for testing and added try catch
+
+    Change-Id: I1d819267ed4a1ef2a6bf68c15822bb858c741627
+
+commit 61b8b72b8fdddcc969954bde750316df87213f47
+Merge: c8d41028d3 6a4f96d4dd
+Author: Dashlin Jeno <dashlin.jeno@tataelxsi.co.in>
+Date:   Wed Jul 8 13:46:06 2020 +0530
+
+    Merge "member variable and function name change" into FunctionalClusters
+
+commit c8d41028d31e6803b7381a33235f66ea6384281b
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Wed Jul 8 13:34:13 2020 +0530
+
+    Crypto : bug fix
+
+    Change-Id: Id110beca68e5d5aa09f28118c4d2a537348fc558
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git log --
+commit 4171b318cb9108b08ddf34458ec1c4aedc4fc95b (HEAD -> modified)
+Author: princek.jolly <princek.jolly@tataelxsi.co.in>
+Date:   Wed Jul 8 10:22:39 2020 +0530
+
+    Fix for search for service and data transmission issue
+
+    Change-Id: Ic1bca270a80eb95c1300553269f9a1e3abdd664e
+
+commit 0219e5973f3c729381645eaec23ca5ad155f3c77 (origin/FunctionalClusters, FunctionalClusters)
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Wed Jul 8 19:17:50 2020 +0530
+
+    Crypto : delete() fix
+
+    Change-Id: I4de818f9c62e91d779e13e49ca6b18948dc0cf7b
+
+commit fc39c0bf10ef43edcc4d8f3254cdcbf4a3af655d
+Author: dashlin.jeno <dashlin.jeno@tataelxsi.co.in>
+Date:   Wed Jul 8 18:31:40 2020 +0530
+
+    Restore backup - bug fix
+
+    Change-Id: I530300eb5066d45445b799892fedcc0e1a3004b7
+
+commit 51fa67f52863e0da142b70642506b9dc6eae4fd7
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Wed Jul 8 15:19:38 2020 +0530
+
+    Crypto : bug fix
+
+    Change-Id: I54d8906f5bef73175acacd8169846607f4a112fe
+
+commit 99bf76c7c878f749bcedae9e4eabbb71a2ae1a53
+Author: BlessyAntony <blessyk.a@tataelxsi.co.in>
+Date:   Wed Jul 8 14:05:22 2020 +0530
+
+    NM : changes for testing and added try catch
+
+    Change-Id: I1d819267ed4a1ef2a6bf68c15822bb858c741627
+
+commit 61b8b72b8fdddcc969954bde750316df87213f47
+Merge: c8d41028d3 6a4f96d4dd
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git log --4
+fatal: unrecognized argument: --4
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git log -3
+commit 4171b318cb9108b08ddf34458ec1c4aedc4fc95b (HEAD -> modified)
+Author: princek.jolly <princek.jolly@tataelxsi.co.in>
+Date:   Wed Jul 8 10:22:39 2020 +0530
+
+    Fix for search for service and data transmission issue
+
+    Change-Id: Ic1bca270a80eb95c1300553269f9a1e3abdd664e
+
+commit 0219e5973f3c729381645eaec23ca5ad155f3c77 (origin/FunctionalClusters, FunctionalClusters)
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Wed Jul 8 19:17:50 2020 +0530
+
+    Crypto : delete() fix
+
+    Change-Id: I4de818f9c62e91d779e13e49ca6b18948dc0cf7b
+
+commit fc39c0bf10ef43edcc4d8f3254cdcbf4a3af655d
+Author: dashlin.jeno <dashlin.jeno@tataelxsi.co.in>
+Date:   Wed Jul 8 18:31:40 2020 +0530
+
+    Restore backup - bug fix
+
+    Change-Id: I530300eb5066d45445b799892fedcc0e1a3004b7
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git diff
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git checkout FunctionalClusters
+Switched to branch 'FunctionalClusters'
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git diff
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git status
+On branch FunctionalClusters
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git lig --merge
+git: 'lig' is not a git command. See 'git --help'.
+
+The most similar command is
+        log
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git log --merge
+fatal: --merge without MERGE_HEAD?
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git log -merge
+fatal: unrecognized argument: -merge
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git log --merge
+fatal: --merge without MERGE_HEAD?
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git log --merge -p File_operations.cpp
+fatal: ambiguous argument 'File_operations.cpp': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git log --merge -p file_operations.cpp
+fatal: ambiguous argument 'file_operations.cpp': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git status
+On branch FunctionalClusters
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git pull
+remote: Counting objects: 10418, done
+remote: Finding sources: 100% (10113/10113)
+remote: Total 10113 (delta 6014), reused 10030 (delta 6014)
+Receiving objects: 100% (10113/10113), 229.16 MiB | 9.59 MiB/s, done.
+Resolving deltas: 100% (6014/6014), completed with 103 local objects.
+From http://10.47.1.33:8080/TEL_AUTOSAR_IP
+   0219e5973f..21f74de32d  FunctionalClusters -> origin/FunctionalClusters
+   bf0ed2bc03..9869aabed4  GWM_Dev_Classic    -> origin/GWM_Dev_Classic
+   b9a7956cfb..32a2537d3e  Tool_Dev_19_11_Migration -> origin/Tool_Dev_19_11_Migration
+Checking out files: 100% (69/69), done.
+Rename from 'D:/0707_git/TEL_AUTOSAR_IP/.git/index.lock' to 'D:/0707_git/TEL_AUTOSAR_IP/.git/index' failed. Should I try again? (y/n) y
+Updating 0219e5973f..21f74de32d
+Fast-forward
+ .../public/ara/com/internal/e2e/is_e2e_enabled.h   |    2 +-
+ .../public/ara/com/internal/ipcshm/ipc_shm_impl.h  |    4 +-
+ .../internal/ipcshm/proxy/ipcsrvc_subs_service.h   |    2 +-
+ .../com/internal/ipcshm/proxy/signal_impl_client.h |    2 +-
+ .../public/ara/com/internal/ipcshm/shm_impl.h      |    8 +-
+ .../internal/ipcshm/skeleton/signal_impl_server.h  |    8 +-
+ .../public/ara/com/internal/ipcsrvc/payload.h      |    6 +-
+ .../internal/ipcsrvc/proxy/ipcsrvc_field_impl.h    |   16 +-
+ .../internal/ipcsrvc/skeleton/ipcsrvc_field_impl.h |   24 +-
+ .../include/public/ara/com/internal/proxy/event.h  |   16 +-
+ .../include/public/ara/com/internal/proxy/field.h  |   14 +-
+ .../ara/com/internal/skeleton/dispatcher_base.h    |   10 +-
+ .../public/ara/com/internal/skeleton/event.h       |   10 +-
+ .../ara/com/internal/skeleton/event_dispatcher.h   |   14 +-
+ .../ara/com/internal/skeleton/field_dispatcher.h   |   30 +-
+ .../ara/com/internal/skeleton/mutable_field.h      |   10 +-
+ .../src/libara_ipcbinding/file_operations.cpp      |   26 +-
+ .../proxy/ipcsrvc_sub_service.cpp                  |    4 +-
+ .../libara_ipcbinding/proxy/signal_impl_client.cpp |    8 +-
+ .../com/source/src/libara_ipcbinding/shm_impl.cpp  |   22 +-
+ .../include/public/ara/crypto/common/utility.h     |   12 +-
+ .../public/ara/crypto/cryp/x509_signature.h        |    2 +-
+ .../ara-api/crypto/source/src/common/utility.cpp   |   10 +-
+ .../source/src/cryp/authn_stream_cipher_ctx.cpp    |    5 +-
+ .../ara-api/crypto/source/src/cryp/cryp_helper.cpp |    8 +-
+ .../source/src/cryp/crypto_provider_derived.cpp    |   65 +-
+ .../crypto/source/src/cryp/hash_function_ctx.cpp   |    3 +-
+ .../source/src/cryp/message_authn_code_ctx.cpp     |    3 +-
+ .../crypto/source/src/cryp/secret_seed_derived.cpp |    8 +-
+ .../source/src/cryp/x509_cert_request_derived.cpp  |   31 +-
+ .../user_manual/TE_Autosar_UM_Iam_06July2020.doc   |  Bin 48128 -> 48128 bytes
+ .../TE_Autosar_19-11_Peer_IAM_07Jul2020.xls        |  Bin 103936 -> 104448 bytes
+ .../TE_Autosar_19-11_SQA_IAM_07Jul2020.xls         |  Bin 103424 -> 103936 bytes
+ .../TE_Autosar_19-11_Iam_UserManual.doc            |  Bin 426496 -> 429568 bytes
+ .../include/private/ara/phm/alive_supervision.h    |    4 +-
+ .../include/private/ara/phm/deadline_supervision.h |    4 +-
+ .../include/private/ara/phm/local_supervision.h    |    7 +-
+ .../include/private/ara/phm/logical_supervision.h  |    2 +-
+ .../source/include/private/ara/phm/phm_utility.h   |   33 +
+ .../include/private/ara/phm/temporal_supervision.h |    5 +-
+ .../source/include/public/ara/phm/function_group.h |   13 +-
+ .../source/include/public/ara/phm/health_channel.h |   14 +-
+ .../phm/source/src/phm-manager/CMakeLists.txt      |    1 +
+ .../phm/source/src/phm-manager/action_item.cpp     |    7 +-
+ .../source/src/phm-manager/alive_supervision.cpp   |   26 +-
+ .../src/phm-manager/deadline_supervision.cpp       |   17 +-
+ .../phm/source/src/phm-manager/function_group.cpp  |    4 +-
+ .../phm/source/src/phm-manager/health_channel.cpp  |   34 +-
+ .../source/src/phm-manager/logical_supervision.cpp |   15 +-
+ .../phm/source/src/phm-manager/phm_json_parser.cpp |    6 +-
+ .../phm/source/src/phm-manager/phm_utility.cpp     |   39 +
+ .../source/src/phm-manager/supervised_entity.cpp   |    5 +-
+ .../src/phm-manager/temporal_supervision.cpp       |    6 +-
+ .../BF_Result/.settings/.polyspace_conf.psprj      |    4 +-
+ .../lib_rest/BF_Result/.settings/ui_settings.prf   |  Bin 2665 -> 2665 bytes
+ .../BF_Result/.status/.follow-progress.txt         |    4 +-
+ .../Polyspace-Doc/rest_analysis_BugFinder.html     | 2327 ++++++++++++++++++++
+ .../rest_analysis_BugFinderSummary.html            |   24 +-
+ ...19b_Update_2_rest_analysis_07_09_2020-10h31.log | 1648 ++++++++++++++
+ .../lib_rest/BF_Result/comments_bak/ps_comments.db |  Bin 45056 -> 45056 bytes
+ .../lib_rest/BF_Result/comments_bak/ps_diff.db     |  Bin 118784 -> 118784 bytes
+ .../BF_Result/comments_bak/ps_results.psbf         |  Bin 3252224 -> 3239936 bytes
+ .../lib_rest/BF_Result/comments_bak/ps_sources.db  |  Bin 7741440 -> 7729152 bytes
+ .../polyspace/lib_rest/BF_Result/drs-template.xml  | 1946 +++++++++++++++-
+ .../polyspace/lib_rest/BF_Result/ps_comments.db    |  Bin 45056 -> 69632 bytes
+ .../test/polyspace/lib_rest/BF_Result/ps_diff.db   |  Bin 118784 -> 778240 bytes
+ .../polyspace/lib_rest/BF_Result/ps_results.psbf   |  Bin 3239936 -> 7974912 bytes
+ .../polyspace/lib_rest/BF_Result/ps_sources.db     |  Bin 7729152 -> 7712768 bytes
+ .../rest/test/polyspace/rest_analysis.psprj        |    4 +-
+ 69 files changed, 6224 insertions(+), 358 deletions(-)
+ create mode 100644 Autosar_Adaptive/19-11/ara-api/phm/source/include/private/ara/phm/phm_utility.h
+ create mode 100644 Autosar_Adaptive/19-11/ara-api/phm/source/src/phm-manager/phm_utility.cpp
+ create mode 100644 Autosar_Adaptive/19-11/ara-api/rest/test/polyspace/lib_rest/BF_Result/Polyspace-Doc/rest_analysis_BugFinder.html
+ create mode 100644 Autosar_Adaptive/19-11/ara-api/rest/test/polyspace/lib_rest/BF_Result/Polyspace_R2019b_Update_2_rest_analysis_07_09_2020-10h31.log
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git log
+commit 21f74de32d80a3cb77dca7697aaa1089c43f693a (HEAD -> FunctionalClusters, origin/FunctionalClusters)
+Author: safia.s <safia.s@tataelxsi.co.in>
+Date:   Thu Jul 9 10:59:36 2020 +0530
+
+    `Polyspace report with the latest fix in the member functions and variables naming
+
+    Change-Id: I08887b88e047b329ba27800ca674da9c92a20c45
+
+commit e7ccbe49ae1d08a33b7c217f4ded24613a13a842
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Thu Jul 9 10:56:50 2020 +0530
+
+    Crypto : crypto provider error cases
+
+    Change-Id: I81e51899b851808c4105d630df61ba4d80bef6e0
+
+commit 9651785e0b8cdeccd014a8a668ac27d8503b676c
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Thu Jul 9 10:05:32 2020 +0530
+
+    Crypto : bug fix
+
+    Change-Id: I5398b13912a0144d0848c4cc2e2cd20090876472
+
+commit 7a89ce64e0689d08d3c103a8c942812c8d0da7ac
+Author: unnikrishnan.vs <unnikrishnan.vs@tataelxsi.co.in>
+Date:   Thu Jul 9 09:54:48 2020 +0530
+
+    SQA Comments Reopened
+
+commit c3f40fa19e4eba4979e6ec6721156081bf6d902c
+Author: Punnoose Thomas <punnoose.t@tataelxsi.co.in>
+Date:   Wed Jul 8 23:33:12 2020 +0530
+
+    IAM user manual updated after SQA review fix
+
+    Change-Id: If8c58e2133779ab82c14b8e3f7039456dc049418
+
+commit cd5bc64ada34b84eaebc3b678ba277e3445a592e
+Author: Rajmohan SK <rajmohansk@tataelxsi.co.in>
+Date:   Wed Jul 8 13:26:48 2020 +0530
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git checkout modified
+Checking out files: 100% (71/71), done.
+Switched to branch 'modified'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git rebase
+There is no tracking information for the current branch.
+Please specify which branch you want to rebase against.
+See git-rebase(1) for details.
+
+    git rebase <branch>
+
+If you wish to set tracking information for this branch you can do so with:
+
+    git branch --set-upstream-to=origin/<branch> modified
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git rebase FunctionalClusters
+First, rewinding head to replay your work on top of it...
+Applying: Fix for search for service and data transmission issue
+error: Failed to merge in the changes.
+Using index info to reconstruct a base tree...
+M       Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+Falling back to patching base and 3-way merge...
+Auto-merging Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+CONFLICT (content): Merge conflict in Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+Patch failed at 0001 Fix for search for service and data transmission issue
+The copy of the patch that failed is found in: .git/rebase-apply/patch
+
+Resolve all conflicts manually, mark them as resolved with
+"git add/rm <conflicted_files>", then run "git rebase --continue".
+You can instead skip this commit: run "git rebase --skip".
+To abort and get back to the state before "git rebase", run "git rebase --abort".
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified|REBASE 1/1)
+$ git diff Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+diff --cc Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+index a1acf9bff8,597d9413c8..0000000000
+mode 100755,100755..100644
+--- a/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
++++ b/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+@@@ -94,9 -89,9 +89,13 @@@ void service_discovery::write_to_file(s
+      }
+      else
+      {
+ -        if (ara::com::internal::ipcsrvc::types::NOTSUCCESS != flock(fd, LOCK_EX)) // Lock the file . . .
+ +        if (ara::com::internal::ipcsrvc::types::NOTSUCCESS != flock(file_desc, LOCK_EX)) // Lock the file . . .
+          {
+++<<<<<<< HEAD
+ +            if (write(file_desc, serverdata.c_str(), serverdata.size() != serverdata.size()))
+++=======
++             if (0 < (write(fd, serverdata.c_str(), serverdata.size())))
+++>>>>>>> Fix for search for service and data transmission issue
+              {
+                  ara::com::internal::ipcsrvc::common::logger().LogInfo() << "SERVICE DISCOVERY FILE WRITE ERROR ";
+              }
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified|REBASE 1/1)
+$ git add Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified|REBASE 1/1)
+$ git status
+rebase in progress; onto 21f74de32d
+You are currently rebasing branch 'modified' on '21f74de32d'.
+  (all conflicts fixed: run "git rebase --continue")
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified|REBASE 1/1)
+$ git rebase --continue
+Rename from 'D:/0707_git/TEL_AUTOSAR_IP/.git/index.lock' to 'D:/0707_git/TEL_AUTOSAR_IP/.git/index' failed. Should I try again? (y/n) y
+Applying: Fix for search for service and data transmission issue
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git checkout FunctionalClusters
+error: Your local changes to the following files would be overwritten by checkout:
+        Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+Please commit your changes or stash them before you switch branches.
+Aborting
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git pull
+remote: Counting objects: 1
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git checkout modified
+Already on 'modified'
+M       Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git diff
+diff --git a/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp b/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_
+operations.cpp
+index f614cfb3e5..8ee59b0eb1 100755
+--- a/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
++++ b/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+@@ -91,11 +91,7 @@ void service_discovery::write_to_file(std::string &serverdata)
+     {
+         if (ara::com::internal::ipcsrvc::types::NOTSUCCESS != flock(file_desc, LOCK_EX)) // Lock the file . . .
+         {
+-<<<<<<< HEAD
+-            if (write(file_desc, serverdata.c_str(), serverdata.size() != serverdata.size()))
+-=======
+-            if (0 < (write(fd, serverdata.c_str(), serverdata.size())))
+->>>>>>> Fix for search for service and data transmission issue
++            if (0 < (write(file_desc, serverdata.c_str(), serverdata.size())))
+             {
+                 ara::com::internal::ipcsrvc::common::logger().LogInfo() << "SERVICE DISCOVERY FILE WRITE ERROR ";
+             }
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git log
+commit 265cbac43cda9df5429b8b052b660e6179116b94 (HEAD -> modified)
+Author: princek.jolly <princek.jolly@tataelxsi.co.in>
+Date:   Wed Jul 8 10:22:39 2020 +0530
+
+    Fix for search for service and data transmission issue
+
+    Change-Id: Ic1bca270a80eb95c1300553269f9a1e3abdd664e
+
+commit 21f74de32d80a3cb77dca7697aaa1089c43f693a (origin/FunctionalClusters, FunctionalClusters)
+Author: safia.s <safia.s@tataelxsi.co.in>
+Date:   Thu Jul 9 10:59:36 2020 +0530
+
+    `Polyspace report with the latest fix in the member functions and variables naming
+
+    Change-Id: I08887b88e047b329ba27800ca674da9c92a20c45
+
+commit e7ccbe49ae1d08a33b7c217f4ded24613a13a842
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Thu Jul 9 10:56:50 2020 +0530
+
+    Crypto : crypto provider error cases
+
+    Change-Id: I81e51899b851808c4105d630df61ba4d80bef6e0
+
+commit 9651785e0b8cdeccd014a8a668ac27d8503b676c
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Thu Jul 9 10:05:32 2020 +0530
+
+    Crypto : bug fix
+
+    Change-Id: I5398b13912a0144d0848c4cc2e2cd20090876472
+
+commit 7a89ce64e0689d08d3c103a8c942812c8d0da7ac
+Author: unnikrishnan.vs <unnikrishnan.vs@tataelxsi.co.in>
+Date:   Thu Jul 9 09:54:48 2020 +0530
+
+    SQA Comments Reopened
+
+commit c3f40fa19e4eba4979e6ec6721156081bf6d902c
+Author: Punnoose Thomas <punnoose.t@tataelxsi.co.in>
+Date:   Wed Jul 8 23:33:12 2020 +0530
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git commit --amend -m "com: Fix to avoid issues with search for service and data transmission."
+[modified 9b3bcce265] com: Fix to avoid issues with search for service and data transmission.
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 57 insertions(+), 57 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git dif
+git: 'dif' is not a git command. See 'git --help'.
+
+The most similar commands are
+        diff
+        config
+        difftool
+        init
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git diff
+diff --git a/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp b/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_
+operations.cpp
+index f614cfb3e5..8ee59b0eb1 100755
+--- a/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
++++ b/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+@@ -91,11 +91,7 @@ void service_discovery::write_to_file(std::string &serverdata)
+     {
+         if (ara::com::internal::ipcsrvc::types::NOTSUCCESS != flock(file_desc, LOCK_EX)) // Lock the file . . .
+         {
+-<<<<<<< HEAD
+-            if (write(file_desc, serverdata.c_str(), serverdata.size() != serverdata.size()))
+-=======
+-            if (0 < (write(fd, serverdata.c_str(), serverdata.size())))
+->>>>>>> Fix for search for service and data transmission issue
++            if (0 < (write(file_desc, serverdata.c_str(), serverdata.size())))
+             {
+                 ara::com::internal::ipcsrvc::common::logger().LogInfo() << "SERVICE DISCOVERY FILE WRITE ERROR ";
+             }
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git push origin HEAD:refs/for/FunctionClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.91 KiB | 195.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 187961, done
+remote: Processing changes: refs: 1, done
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ ! [remote rejected]       HEAD -> refs/for/FunctionClusters (branch FunctionClusters not found)
+error: failed to push some refs to 'http://princek.jolly@10.47.1.33:8080/TEL_AUTOSAR_IP'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git push origin HEAD:refs/for/FunctionalClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.91 KiB | 216.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188404, done
+remote: Processing changes: new: 1, refs: 1, done
+remote: (W) 9b3bcce: commit subject >65 characters; use shorter first paragraph
+remote: (W) 9b3bcce: too many commit message lines longer than 70 characters; manually wrap lines
+remote:
+remote: New Changes:
+remote:   http://10.47.1.33:8080/14776 com: Fix to avoid issues with search for service and data transmission.
+remote:
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ * [new branch]            HEAD -> refs/for/FunctionalClusters
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git
+usage: git [--version] [--help] [-C <path>] [-c name=value]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           <command> [<args>]
+
+These are common Git commands used in various situations:
+
+start a working area (see also: git help tutorial)
+   clone      Clone a repository into a new directory
+   init       Create an empty Git repository or reinitialize an existing one
+
+work on the current change (see also: git help everyday)
+   add        Add file contents to the index
+   mv         Move or rename a file, a directory, or a symlink
+   reset      Reset current HEAD to the specified state
+   rm         Remove files from the working tree and from the index
+
+examine the history and state (see also: git help revisions)
+   bisect     Use binary search to find the commit that introduced a bug
+   grep       Print lines matching a pattern
+   log        Show commit logs
+   show       Show various types of objects
+   status     Show the working tree status
+
+grow, mark and tweak your common history
+   branch     List, create, or delete branches
+   checkout   Switch branches or restore working tree files
+   commit     Record changes to the repository
+   diff       Show changes between commits, commit and working tree, etc
+   merge      Join two or more development histories together
+   rebase     Reapply commits on top of another base tip
+   tag        Create, list, delete or verify a tag object signed with GPG
+
+collaborate (see also: git help workflows)
+   fetch      Download objects and refs from another repository
+   pull       Fetch from and integrate with another repository or a local branch
+   push       Update remote refs along with associated objects
+
+'git help -a' and 'git help -g' list available subcommands and some
+concept guides. See 'git help <command>' or 'git help <concept>'
+to read about a specific subcommand or concept.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git diff
+diff --git a/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp b/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_
+operations.cpp
+index f614cfb3e5..8ee59b0eb1 100755
+--- a/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
++++ b/Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+@@ -91,11 +91,7 @@ void service_discovery::write_to_file(std::string &serverdata)
+     {
+         if (ara::com::internal::ipcsrvc::types::NOTSUCCESS != flock(file_desc, LOCK_EX)) // Lock the file . . .
+         {
+-<<<<<<< HEAD
+-            if (write(file_desc, serverdata.c_str(), serverdata.size() != serverdata.size()))
+-=======
+-            if (0 < (write(fd, serverdata.c_str(), serverdata.size())))
+->>>>>>> Fix for search for service and data transmission issue
++            if (0 < (write(file_desc, serverdata.c_str(), serverdata.size())))
+             {
+                 ara::com::internal::ipcsrvc::common::logger().LogInfo() << "SERVICE DISCOVERY FILE WRITE ERROR ";
+             }
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git add /Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+fatal: Invalid path 'C:/Program Files/Git/Autosar_Adaptive': No such file or directory
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git add Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git diff
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git commit --amend "com: Fix to resolve issues of find service and data communication."
+error: pathspec 'com: Fix to resolve issues of find service and data communication.' did not match any file(s) known to git.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git commit --amend -m "com: Fix to resolve issues of find service and data communication."
+[modified f834c78d3f] com: Fix to resolve issues of find service and data communication.
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 54 insertions(+), 58 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git push origin HEAD:refs/for/FunctionalClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.83 KiB | 234.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188404, done
+remote: Processing changes: new: 1, refs: 1, done
+remote: (W) f834c78: commit subject >65 characters; use shorter first paragraph
+remote:
+remote: New Changes:
+remote:   http://10.47.1.33:8080/14778 com: Fix to resolve issues of find service and data communication.
+remote:
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ * [new branch]            HEAD -> refs/for/FunctionalClusters
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git diff
+diff --git a/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h b/Autosar_Adaptive/19-11/ara-api/com/source/in
+clude/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+index 236d0e1518..2438ff01a8 100644
+--- a/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
++++ b/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+@@ -481,12 +481,6 @@ private:
+                       proxy::ipcsrvc_sub_service>::get_instance_shm();
+            if (obj->read_data(EventDescriptor::event_id, dat_vector))
+            {
+-               // onMessage -read vector size is-ZERO ";
+-               std::vector<ipcsrvc::byte_t>::iterator iter = dat_vector.begin();
+-               while (iter != dat_vector.end())
+-               {
+-                   iter++;
+-               }
+                std::shared_ptr<ipcsrvc::payload> payload = std::make_shared<ipcsrvc::payload_impl>();
+                payload->set_data(dat_vector);
+                common::Deserializer<IPCSrvcEventImplT> deserializer(payload->get_data(), payload->get_length());
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git log
+commit f834c78d3f10f40a63f1d41a5252982b1aed3e07 (HEAD -> modified)
+Author: princek.jolly <princek.jolly@tataelxsi.co.in>
+Date:   Wed Jul 8 10:22:39 2020 +0530
+
+    com: Fix to resolve issues of find service and data communication.
+
+    Change-Id: I7ec276d33d2c8281f335c17097b6bdf50b1769cb
+
+commit 21f74de32d80a3cb77dca7697aaa1089c43f693a (origin/FunctionalClusters, FunctionalClusters)
+Author: safia.s <safia.s@tataelxsi.co.in>
+Date:   Thu Jul 9 10:59:36 2020 +0530
+
+    `Polyspace report with the latest fix in the member functions and variables naming
+
+    Change-Id: I08887b88e047b329ba27800ca674da9c92a20c45
+
+commit e7ccbe49ae1d08a33b7c217f4ded24613a13a842
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Thu Jul 9 10:56:50 2020 +0530
+
+    Crypto : crypto provider error cases
+
+    Change-Id: I81e51899b851808c4105d630df61ba4d80bef6e0
+
+commit 9651785e0b8cdeccd014a8a668ac27d8503b676c
+Author: manjula.k <manjula.k@tataelxsi.co.in>
+Date:   Thu Jul 9 10:05:32 2020 +0530
+
+    Crypto : bug fix
+
+    Change-Id: I5398b13912a0144d0848c4cc2e2cd20090876472
+
+commit 7a89ce64e0689d08d3c103a8c942812c8d0da7ac
+Author: unnikrishnan.vs <unnikrishnan.vs@tataelxsi.co.in>
+Date:   Thu Jul 9 09:54:48 2020 +0530
+
+    SQA Comments Reopened
+
+commit c3f40fa19e4eba4979e6ec6721156081bf6d902c
+Author: Punnoose Thomas <punnoose.t@tataelxsi.co.in>
+Date:   Wed Jul 8 23:33:12 2020 +0530
+
+    IAM user manual updated after SQA review fix
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git status
+On branch modified
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git diff
+diff --git a/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h b/Autosar_Adaptive/19-11/ara-api/com/source/in
+clude/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+index 236d0e1518..2438ff01a8 100644
+--- a/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
++++ b/Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+@@ -481,12 +481,6 @@ private:
+                       proxy::ipcsrvc_sub_service>::get_instance_shm();
+            if (obj->read_data(EventDescriptor::event_id, dat_vector))
+            {
+-               // onMessage -read vector size is-ZERO ";
+-               std::vector<ipcsrvc::byte_t>::iterator iter = dat_vector.begin();
+-               while (iter != dat_vector.end())
+-               {
+-                   iter++;
+-               }
+                std::shared_ptr<ipcsrvc::payload> payload = std::make_shared<ipcsrvc::payload_impl>();
+                payload->set_data(dat_vector);
+                common::Deserializer<IPCSrvcEventImplT> deserializer(payload->get_data(), payload->get_length());
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git checkout FunctionalClusters
+error: Your local changes to the following files would be overwritten by checkout:
+        Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+Please commit your changes or stash them before you switch branches.
+Aborting
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git checkout Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (modified)
+$ git checkout FunctionalClusters
+Switched to branch 'FunctionalClusters'
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git branch New_branch
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git checkout New_branch
+Switched to branch 'New_branch'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git fetch http://princek.jolly@10.47.1.33:8080/a/TEL_AUTOSAR_IP refs/changes/03/14703/3 && git cherry-pick FETCH_HEAD
+From http://10.47.1.33:8080/a/TEL_AUTOSAR_IP
+ * branch                  refs/changes/03/14703/3 -> FETCH_HEAD
+error: could not apply 4171b318cb... Fix for search for service and data transmission issue
+hint: after resolving the conflicts, mark the corrected paths
+hint: with 'git add <paths>' or 'git rm <paths>'
+hint: and commit the result with 'git commit'
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch|CHERRY-PICKING)
+$ git fetch http://princek.jolly@10.47.1.33:8080/a/TEL_AUTOSAR_IP refs/changes/03/14703/2 && git cherry-pick FETCH_HEAD
+From http://10.47.1.33:8080/a/TEL_AUTOSAR_IP
+ * branch                  refs/changes/03/14703/2 -> FETCH_HEAD
+error: Cherry-picking is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: cherry-pick failed
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch|CHERRY-PICKING)
+$ git fetch http://princek.jolly@10.47.1.33:8080/a/TEL_AUTOSAR_IP refs/changes/03/14703/3 && git cherry-pick FETCH_HEAD
+From http://10.47.1.33:8080/a/TEL_AUTOSAR_IP
+ * branch                  refs/changes/03/14703/3 -> FETCH_HEAD
+error: Cherry-picking is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: cherry-pick failed
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch|CHERRY-PICKING)
+$ git status
+On branch New_branch
+You are currently cherry-picking commit 4171b318cb.
+  (fix conflicts and run "git cherry-pick --continue")
+  (use "git cherry-pick --abort" to cancel the cherry-pick operation)
+
+Changes to be committed:
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+
+        both modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch|CHERRY-PICKING)
+$ git cherry-pick --continue
+error: Committing is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: Exiting because of an unresolved conflict.
+U       Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch|CHERRY-PICKING)
+$ git add  Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch|CHERRY-PICKING)
+$ git status
+On branch New_branch
+You are currently cherry-picking commit 4171b318cb.
+  (all conflicts fixed: run "git cherry-pick --continue")
+  (use "git cherry-pick --abort" to cancel the cherry-pick operation)
+
+Changes to be committed:
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch|CHERRY-PICKING)
+$ git cherry-pick --continue
+[New_branch 7af3c64308] Fix for search for service and data transmission issue
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 54 insertions(+), 58 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git status
+On branch New_branch
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git diff
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git add Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git status
+On branch New_branch
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git diff
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git rebase FunctionalClusters
+Cannot rebase: Your index contains uncommitted changes.
+Please commit or stash them.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git commit --amend -m "com: Fix to resolve issues of find service and data communication."
+[New_branch bf9079bee8] com: Fix to resolve issues of find service and data communication.
+ Date: Wed Jul 8 10:22:39 2020 +0530
+ 3 files changed, 48 insertions(+), 58 deletions(-)
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git rebase FunctionalClusters
+Current branch New_branch is up to date.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git status
+On branch New_branch
+nothing to commit, working tree clean
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git push origin HEAD:refs/for/FunctionalClusters
+Counting objects: 20, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (20/20), 1.81 KiB | 132.00 KiB/s, done.
+Total 20 (delta 13), reused 0 (delta 0)
+remote: Resolving deltas: 100% (13/13)
+remote: Counting objects: 188105, done
+remote: Processing changes: new: 1, refs: 1, done
+remote: (W) bf9079b: commit subject >65 characters; use shorter first paragraph
+remote:
+remote: New Changes:
+remote:   http://10.47.1.33:8080/14782 com: Fix to resolve issues of find service and data communication.
+remote:
+To http://10.47.1.33:8080/TEL_AUTOSAR_IP
+ * [new branch]            HEAD -> refs/for/FunctionalClusters
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (New_branch)
+$ git checkout FunctionalClusters
+Switched to branch 'FunctionalClusters'
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git pull
+remote: Counting objects: 3023, done
+remote: Finding sources: 100% (1969/1969)
+error: RPC failed; curl 18 transfer closed with outstanding read data remaining
+fatal: The remote end hung up unexpectedly
+fatal: early EOF
+fatal: index-pack failed
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git status
+On branch FunctionalClusters
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_com/runtime.cpp
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        Autosar_Adaptive/19-11/ara-api/com/source/src/libara_com/VCAST.QIK
+        Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/VCAST.QIK
+        Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/proxy/VCAST.QIK
+        Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/skeleton/VCAST.QIK
+        Autosar_Adaptive/19-11/ara-api/com/vectorcast_test/LIBARA_COM_IPCSHM_CLIENT_FUT/
+        Autosar_Adaptive/19-11/ara-api/com/vectorcast_test/com_stub/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$ git status
+On branch FunctionalClusters
+Your branch is up to date with 'origin/FunctionalClusters'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcshm/file_operations.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/include/public/ara/com/internal/ipcsrvc/proxy/ipcsrvc_event_impl.h
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_com/runtime.cpp
+        modified:   Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/file_operations.cpp
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        Autosar_Adaptive/19-11/ara-api/com/source/src/libara_com/VCAST.QIK
+        Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/VCAST.QIK
+        Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/proxy/VCAST.QIK
+        Autosar_Adaptive/19-11/ara-api/com/source/src/libara_ipcbinding/skeleton/VCAST.QIK
+        Autosar_Adaptive/19-11/ara-api/com/vectorcast_test/LIBARA_COM_IPCSHM_CLIENT_FUT/
+        Autosar_Adaptive/19-11/ara-api/com/vectorcast_test/com_stub/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+princek.jolly@princek_jolly MINGW64 /d/0707_git/TEL_AUTOSAR_IP (FunctionalClusters)
+$
+==============TO FETCH NEW BRANCH
+git fetch http://princek.jolly@10.47.1.33:8080/a/TEL_AUTOSAR_IP refs/changes/27/15227/1 && git cherry-pick FETCH_HEAD

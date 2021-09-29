@@ -1,0 +1,30 @@
+qql - to see code
+n - next line
+s - go in to next function 
+b - break
+
+handle SIG35 noprint nostop
+handle SIG36 noprint nostop
+handle SIG37 noprint nostop
+handle SIG38 noprint nostop
+
+handle SIG39 noprint nostop
+handle SIG40 noprint nostop
+handle SIG41 noprint nostop
+handle SIG42 noprint nostop
+/////////////QNX signals
+handle SIG42 noprint nostop
+handle SIG43 noprint nostop
+handle SIG44 noprint nostop
+handle SIG45 noprint nostop
+handle SIG46 noprint nostop
+handle SIG47 noprint nostop
+handle SIG48 noprint nostop
+handle SIG49 noprint nostop
+
+
+
+
+
+vsomeip - task - known issue 
+IPC     -  serializaion..periyakaruppan.ss

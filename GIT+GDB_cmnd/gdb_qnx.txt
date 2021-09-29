@@ -1,0 +1,46 @@
+In target machine.
+$pdebug 8001& // run in background
+in host machine 
+go  to qnx_700 host folder and run executable 
+$ ntox86_64-gdb
+$ target qnx 10.47.132.227:8001
+copy executable to same folder from where we run gdb and run below command 
+$ upload radar /home/qnxuser/radar
+$ file radar
+$gdb run
+
+***********************************************///HOTS COMMANDS***************************************
+Microsoft Windows [Version 10.0.16299.192]
+(c) 2017 Microsoft Corporation. All rights reserved.
+
+C:\Users\princek.jolly\qnx700_2\host\win64\x86_64\usr\bin>ntox86_64-gdb.exe
+GNU gdb (GDB) 7.12 [qnx700 r1234]
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "--host=x86_64-w64-mingw32 --target=x86_64-pc-nto-qnx7.0.0".
+Type "show configuration" for configuration details.Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+(gdb) target qnx 10.47.132.227:8001
+Remote debugging using 10.47.132.227:8001
+Remote target is little-endian
+(gdb) file /home/qnxuser/radar
+/home/qnxuser/radar: No such file or directory.
+(gdb) upload radar
+Remote was unable to open 'radar': Permission denied
+(gdb) upload radar /home/qnxuser/radar
+(gdb) file radar
+Reading symbols from radar...done.
+(gdb) r
+Starting program: C:\Users\princek.jolly\qnx700_2\host\win64\x86_64\usr\bin\radar
+Remote: /home/qnxuser/radar
+warning: Unable to find dynamic linker breakpoint function.
+GDB will be unable to debug shared library initializers
+and track explicitly loaded dynamic code.
+[50100.382751]~DLT~109850655~INFO     ~Socket /tmp/dlt cannot be opened. Retrying later...
+[New pid 109850655 tid 2]
+[New pid 109850655 tid 3]
