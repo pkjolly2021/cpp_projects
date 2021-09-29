@@ -1,0 +1,54 @@
+#include <iostream>
+#include <memory>
+#include <functional>
+using namespace std;
+
+class interf
+{
+    static std::shared_ptr<interf> my_shptr;
+    public:
+    static std::shared_ptr<interf> get_shptr()
+    {
+        if(my_shptr == nullptr)
+        {
+            my_shptr = std::make_shared<interf>();
+        }
+        return(my_shptr);
+    }
+    void regi_cb(int da, std::function<void(int)> fun)
+    {
+        fun(20); //call lambda with value 20
+    }
+};
+ std::shared_ptr<interf> interf::my_shptr = nullptr;
+ 
+ class event
+ {
+     int Id;
+
+     public:
+      event(int da):Id(da)
+     {}
+     void subsc_eve(void)
+     {
+         auto obj = interf::get_shptr();
+         obj->regi_cb(Id, [this](int num)
+                         {
+                             event::my_lambda_message(num);   
+                          });
+     }
+     void  my_lambda_message(int data)
+     {
+         std::cout<<"call back data is: "<<data; 
+     }
+ };
+ 
+
+int main()
+{
+    auto obj = std::make_shared<event>(90);
+    obj->subsc_eve();
+    //cout<<"Hello World";
+
+    return 0;
+}
