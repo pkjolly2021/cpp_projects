@@ -1,0 +1,26 @@
+
+ struct Node {
+        int data;
+        struct Node* next;
+        }
+
+//first pointer is slow and second faster and if loop is there these poinrters will be same at one point.
+
+bool has_cycle(Node* head) {
+    
+    Node *curr = head;
+    Node *cuu_next = head;
+    while(curr && cuu_next && cuu_next->next)
+    {
+        curr = curr->next;
+        cuu_next = cuu_next->next->next;
+        if(curr == cuu_next)
+        {
+            return(1);
+        }
+
+    }
+    return 0;
+    // Complete this function
+    // Do not write the main method
+}
