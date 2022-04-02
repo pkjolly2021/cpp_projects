@@ -1,0 +1,50 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+//TO GEGT THE PREVIOUS POWER OF 2.
+// FOR LONG INT 4 BYTE, SETTING ONLY LEFT MOST BIT IN CURRENT NUMBER.
+
+//EX: 9 1001
+//      1000 - is the power of 2 previous to 9.
+
+
+int find_prev_numb_power_2(long n)
+{
+   long val;
+   long prev_num = 0x80000000;
+   do
+   {
+      if (val = (prev_num  & n))
+       {
+           break;
+       }
+       prev_num >>= 1;
+   }while(prev_num);
+    val = n - val;
+    return val;
+}
+
+//AND WITH PREVIOUS NUMBER, IF VALUE IS 0, POWER OF 2. ELSE IT IS NOT POWER OF 2.
+ 
+long check_if_num_powerof2(long n)
+{
+    if ((n & (n-1)) != 0)
+        return FALSE;
+    else
+        return TRUE;
+}
+
+int main()
+{
+   std::cout<<"Winner is: "<< check_person(6)<<std::endl;
+    return 0;
+}
