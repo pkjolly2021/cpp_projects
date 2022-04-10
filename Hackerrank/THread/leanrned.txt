@@ -1,0 +1,6 @@
+> inside class, thread id can be created using std::thread \
+> using std::thread =, thread can be created.
+> std::therad(&fun, variable)
+> thread function needs "this" object, need to have mentioned
+> join thread after constrcting the thread. 
+> conditional variable can be used with lambda. wait will be continue if labmda return is false.

@@ -1,67 +1,70 @@
-//use conditional variabl to print even and odd number in separeate thread from global array
-
-          
-
-
-/******************************************************************************
-
-                              Online C++ Compiler.
-               Code, Compile, Run and Debug C++ program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
 #include <iostream>
-#include <thread>
-#include  <condition_variable>
-#include  <mutex>
+#include <memory>
+#include<thread>
+#include<mutex>
+#include <condition_variable>
+#include<vector>
 
-using namespace std;
+//create a thread inside a class
 
-std::array<int, 10> glob_arr {1,2,3,4,5,6,7,8,9,10};
-int i = 0;
-std::thread th1, th2;
-std::mutex mu;
-std::condition_variable cv;
-
-
-void print_even(void)
+class check
 {
-    std::cout<<"print even"<<std::endl;
-  while(i <= 9)
-  {
-     std::unique_lock<std::mutex> lock(mu);
-     if(glob_arr[i]%2)
+    private:
+    int i;
+      std::thread th1;
+      std::thread th2;
+      std::mutex mu;
+      std::condition_variable cond_var;
+      std::vector<int> my_vec;
+    public:
+    void even_thread(void);
+    void odd_thread(void);
+     void start_thread(void)
      {
-         std::cout<<"print wait CV"<<std::endl;
-        cv.wait(lock);
-        
+        th1 = std::thread(&check::even_thread, this);
+        th2 = std::thread(&check::odd_thread, this);
+ 
+        th1.join();
+        th2.join();         
      }
-     std::cout<<"Even number is: "<<glob_arr[i++]<<std::endl;
-     lock.unlock();
-  }
+     check(std::vector<int>& dat)
+     {
+          std::cout<<"inside const"<<std::endl;
+          my_vec = dat;
+     }
+     ~check()
+     {}
+};
+
+
+void check::even_thread()
+{
+   for (i =0; i< my_vec.size(); i++)
+   {
+      std::unique_lock<std::mutex> lck(mu);  //get mutex
+     cond_var.wait(lck, [this](){return (my_vec[i]%2 == 0);});  //wait for other thread to execute   
+     std::cout<<"Even thread data is: "<<my_vec[i]<<std::endl;
+     lck.unlock();
+     cond_var.notify_all();
+   }
 }
 
-void print_odd(void)
+
+void check::odd_thread()
 {
-    std::cout<<"print odd"<<std::endl;
-   while(i <= 9)
+   for (i =0; i< my_vec.size(); i++)
    {
-      std::unique_lock<std::mutex> lock(mu);
-      if( glob_arr[i] % 2)
-      {
-        std::cout<<"Odd number is: "<<glob_arr[i++]<<std::endl;
-      }
-      lock.unlock();
-      cv.notify_one();
-   }
+      std::unique_lock<std::mutex> lck(mu);   //get mutex
+      cond_var.wait(lck, [this](){std::cout<<"inside check for ODD indx is: "<<i<<std::endl; return(my_vec[i]%2 == 1);});
+      std::cout<<"Odd thread data is: "<< my_vec[i]<<std::endl;
+      lck.unlock();
+      cond_var.notify_all();
+   }   
 }
 
 int main()
 {
-    th1 = std::thread(print_even);
-    th2 = std::thread(print_odd);
-
-    th1.join();
-    th2.join(); 
+   std::vector<int> test={1,2,3,4,5,6,8,10,12,13,14};
+   std::shared_ptr<check> obj_ptr = std::make_shared<check>(test);
+   obj_ptr->start_thread();
 }
