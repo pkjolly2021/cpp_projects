@@ -69,8 +69,8 @@ void prnit_ll_reverse(ddllnode *curr_node)
 
     while(curr_node->next != nullptr)
     {
-        curr_node = curr_node->next;
-        prnit_ll_reverse(curr_node);
+     //   curr_node = curr_node->next;
+        prnit_ll_reverse(curr_node->next);
     }
     std::cout<<"Data revrse order is: "<< curr_node->data;
 

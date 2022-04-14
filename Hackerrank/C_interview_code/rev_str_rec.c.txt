@@ -1,0 +1,25 @@
+//#include <iostream>
+#include <stdio.h>
+//using namespace std;
+
+//Hello
+
+//olleH
+
+void pri_rev(char *str)
+{
+    if(*str != '\0')
+    {
+         pri_rev(str+1);
+         printf("%c", *str);
+     }
+}
+
+//o
+
+int main()
+{
+  //  cout<<"Hello World";
+   pri_rev("PRINCE");
+    return 0;
+}
