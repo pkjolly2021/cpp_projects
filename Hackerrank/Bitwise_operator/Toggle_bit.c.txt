@@ -1,0 +1,24 @@
+#include <stdio.h>
+
+#define TOGGLE_BIT(dat, pos) (dat ^= (1<<pos))
+
+int main()
+{
+    unsigned int dat = 0;
+    if(TOGGLE_BIT(dat, 1))
+    {
+        printf("NOT TOGGLED");
+    }
+    else
+    {
+         printf("TOGGLED");
+    }
+    
+
+    return 0;
+}
+// XOR
+// 0 0 0
+// 0 1 1
+// 1 0 1
+// 1 1 0

@@ -1,0 +1,13 @@
+//clear a bit c
+
+#include <stdio.h>
+#define CLEAR_BIT(dat, pos) (dat &= ~(1 << pos))
+
+int main()
+{
+    int data = 3;
+    CLEAR_BIT(data, 0);
+    printf("%d", data);
+
+    return 0;
+}

@@ -1,0 +1,21 @@
+#include <stdio.h>
+
+#define SET_BIT_CHECK(dat,  pos) (dat &= (1<<pos))
+
+int main()
+{
+    //printf("Hello World");
+    int data = 2;
+    if(SET_BIT_CHECK(data,1))
+    {
+        printf("%s","BIT IS SET");
+    }
+    else
+    {
+        
+         printf("%s","BIT IS NOT SET");
+    }
+    
+
+    return 0;
+}

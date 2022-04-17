@@ -1,0 +1,33 @@
+//right shift number and AND with 1 
+//add the resukt with counter 
+//
+
+
+#include <iostream>
+using namespace std;
+//count set bits of intiger
+
+
+//right shift the number and AND with 1.
+void count_nu_set_bits(unsigned int num)
+{
+  int count_set_bit = 0;
+  while(num)
+  {
+     count_set_bit += (num & 1);
+     num >>= 1;
+  }
+  cout<<"count is "<<count_set_bit;
+}
+
+cout<<"rev data is: "<<ans<<std::endl;
+}
+
+int main()
+{
+    //   rev_bits(1);
+    //rev_bits(2147483648);
+    //cout<<sizeof(int)<<std::endl;
+    count_nu_set_bits(255);
+    return 0;
+}

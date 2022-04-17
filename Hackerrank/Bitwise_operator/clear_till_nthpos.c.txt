@@ -1,0 +1,32 @@
+
+#include <iostream>
+
+using namespace std;
+
+//clear the allthe bits from LSB till ith bits
+// take variable init to 1
+// left shit by n position
+// minus by 1.
+// ~ the data and AND with data.
+//https://aticleworld.com/interview-questions-on-bitwise-operators-in-c/
+void clear_allbit_tillnthpos_frm_lsb(unsigned int dat, int nth)
+{
+    unsigned int mask = 1;
+    mask <<= nth;
+    mask -= 1;
+    mask = ~mask;
+    dat &= mask;
+    cout <<"data: "<< dat;
+}
+
+int main()
+{
+    //   rev_bits(1);
+    //rev_bits(2147483648);
+    //cout<<sizeof(int)<<std::endl;
+   // count_nu_set_bits(255);
+   clear_allbit_tillnthpos_frm_lsb(65535, 4);
+   
+    return 0;
+}
+

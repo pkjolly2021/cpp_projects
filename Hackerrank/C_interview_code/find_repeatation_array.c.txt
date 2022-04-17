@@ -1,0 +1,52 @@
+//first looop takes first value of array
+//second loop comlares first data and start comapring from next poistion in array till n-1. 
+//if it mfind mach can report it.
+
+
+#include <stdio.h>
+
+
+void find_repeat(int arr[], int n)
+{
+    int new_arr[100];
+    int k = 0;
+     int cnt = 0;
+    for(int i=0;i<n;i++)
+    {
+         cnt = 0;
+        for(int j=i+1;j<n;j++)
+        {
+            if(arr[i] == arr[j])
+            {
+                  printf("CNT incremented");
+                cnt++;
+            }
+        }
+        if(cnt == 0)
+        {
+            
+                 printf("new_arr = %d", arr[i]);
+            new_arr[k] = arr[i];
+            k++;
+       
+        }
+        else
+        {
+            printf("EXIT CNT");
+        }
+    }
+    
+    for(int m=0; m<k; m++)
+    {
+      //  printf("%d", new_arr[m]);
+    }
+}
+
+
+int main()
+{
+   int arr[] = {10,20,30,30,40,50};
+   find_repeat(arr, 6);
+
+    return 0;
+}

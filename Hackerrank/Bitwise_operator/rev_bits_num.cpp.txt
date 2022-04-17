@@ -1,0 +1,33 @@
+
+#include <iostream>
+
+//right shift number and get 0th position number to a ans variable.
+// right shit number
+//left shift answer variable 
+
+using namespace std;
+
+
+void rev_bits(unsigned int dat)
+{
+    unsigned int ans = 0;
+    int cnt = 1;
+    while(cnt <= 32)
+    {
+        ans <<= 1;
+        ans |= (dat&1);
+        dat >>= 1;
+      
+        cnt++;
+    }
+cout<<"rev data is: "<<ans<<std::endl;
+}
+
+int main()
+{
+       rev_bits(1);
+    //rev_bits(2147483648);
+    cout<<sizeof(int)<<std::endl;
+    return 0;
+}
+

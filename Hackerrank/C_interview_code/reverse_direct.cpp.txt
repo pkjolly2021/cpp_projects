@@ -1,0 +1,38 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+
+//should never try to modify the char pointer since it is const and red from executable.
+// SIzeof pointer will give size of pointer not data.
+//
+
+*******************************************************************************/
+#include <stdio.h>
+#include <string.h>
+
+void rev_str(char str[])
+{
+    int j = strlen(str);
+    j--;
+    //str[1] = 'a';
+    printf("len of string is %ld ", sizeof(str));
+    for (int i=0; i < strlen(str)/2; i++)
+    {
+        char tmp = str[i];
+        str[i] = str[j];
+        str[j--] = tmp;
+    }
+    
+    printf("%s", str);
+}
+
+int main()
+{
+    char dat[10] = "PRINCEK";
+    rev_str(dat);
+    //cout<<"Hello World";
+    return 0;
+}

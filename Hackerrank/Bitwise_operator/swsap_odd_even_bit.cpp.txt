@@ -1,0 +1,13 @@
+Get all even bits of data by doing bitwise and (&) of data with 0xAAAAAAAA (data & 0xAAAAAAAA).
+Get all odd bits of data by doing bitwise and (&) of data with 0x55555555 (data & 0x55555555).
+Right shift all even bits ((data & 0xAAAAAAAA)>>1).
+Left shift all odd bits ((data & 0x55555555)<<1).
+Combine the value which gets from the left and right operation ((data & 0xAAAAAAAA)>>1 | (data & 0x55555555)<<1).
+
+int main()
+{
+    int data = 2;
+    data = ((data & 0xAAAAAAAA)>>1 | (data & 0x55555555)<<1);
+    printf("%d",data);
+    return 0;
+}
