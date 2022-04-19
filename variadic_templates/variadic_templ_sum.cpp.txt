@@ -9,6 +9,13 @@ T add(T dat)
     return(dat);
 }
 
+//stack unwinding
+//return 5
+//4 + add(5) = 9
+//3 + add(4,5) = 12
+//2 + add(3,4,5) = 14
+//1 + add(2,3,4,5) = 15
+
 template<typename T, typename... Args>
 T add(T dat, Args...arg)
 {

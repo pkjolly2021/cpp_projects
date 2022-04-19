@@ -1,0 +1,26 @@
+
+#include <iostream>
+
+using namespace std;
+
+template<typename arg>
+void rev(arg dat)
+{
+    cout<<"data "<<dat;
+    //return(dat);
+}
+
+
+template<typename arg, typename...args>
+void rev(arg dat, args... datas)
+{
+   rev(datas...);
+   cout<<"data "<<dat;
+}
+
+int main()
+{
+   rev("HELLO", "HOW", "ARE");
+
+    return 0;
+}
