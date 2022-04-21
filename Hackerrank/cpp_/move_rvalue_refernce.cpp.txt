@@ -1,0 +1,104 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+//move assignement and move copy soncstructoe
+#include <iostream>
+#include <vector>
+using namespace std;
+
+
+
+class test
+{
+    int *ptr;
+    char data;
+    
+    public:
+    test()
+    {
+        cout<<"default const"<<std::endl;
+    }
+    ~test()
+    {
+        
+    }
+    test(std::vector<int>& my_vec, int d)
+    {
+        ptr = new int[my_vec.size()];
+        int i = 0;
+        for (auto a : my_vec)
+        {
+            ptr[i++] = a;
+        }
+        data = d;
+    }
+    
+    //move constrictor
+    test (test&& ob)
+    {
+        
+        cout<<"inside move copy const"<<std::endl;
+        ptr = ob.ptr;
+        ob.ptr = nullptr;
+        data = ob.data;
+        data =0;
+    }
+    
+    
+    void ref_test( int& data)
+    {
+        cout<<"inside test refence data"<<std::endl;
+    }
+    
+    void ref_test (int&& data)
+    {
+        cout<<"inside test R value refence data"<<std::endl;
+    }
+    
+    
+    //Move assignment opertot
+    
+    test& operator= ( test&& obj)
+    {
+       ptr = obj.ptr;
+       obj.ptr = nullptr;
+       data = obj.data;
+       obj.data = 0;
+       return *this;
+    }
+    void print(void)
+    {
+        for (int i=0; i < 6; i++)
+        {
+            cout<<"data: "<<ptr[i]<<std::endl;
+        }
+    }
+};
+
+
+
+int main()
+{
+    std::vector<int> my_vec{12,23,77,54,67,98};
+    test oob(my_vec, 99);
+    //oob.print();
+    test chk;
+    chk = std::move(oob); //move assignement opertor will be called.
+    chk.print();
+    int a = 20;
+    chk.ref_test(a);
+    chk.ref_test(30);
+    
+    test ohhh = std::move (chk);
+    
+    
+    //d obj;
+    //obj.pri();
+//    cout<<"Hello World";
+
+    return 0;
+}

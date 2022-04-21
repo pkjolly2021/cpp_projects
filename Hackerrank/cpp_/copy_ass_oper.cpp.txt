@@ -1,0 +1,90 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+//initialize a initger pointer -in *ptr new int [10] - will allocate 10 itiger size memory
+// *ptr = new int(3); - this will initialize a data 3 after creating memoroy for intiger pointer.
+// chk obj - will trigger default const
+// chk obj = old_obj '// will trigger copy cosnt
+// obj = old_obj //will trigger assisgnment opertot
+// obj = obj + old_obj // opertaot overlaoing for +
+//
+ 
+
+
+#include <iostream> 
+
+using namespace std;
+
+class chk
+{
+    private:
+    int data;
+    int *ptr;
+    
+    public:
+    chk()
+    {
+        std::cout<<"default const"<<std::endl;
+    }
+    chk(int dat): data(dat)
+    {
+        data = 20;
+        ptr = new int (dat); //initialize to data 10
+       // ptr = new int [10]; //init array of 10
+       std::cout<<"paramterised const"<<std::endl;
+    }
+    
+    chk(const chk& obj)
+    {
+        std::cout<<"inside copy const"<<std::endl;
+        ptr = new int (*(obj.ptr));
+        data = obj.data;
+    }
+    
+    void operator= (const chk& obj)
+    {
+        std::cout<<"inside assigenmentoperat"<<std::endl;
+        ptr = new int (*(obj.ptr));
+        data = obj.data;
+    }
+    
+    void print_data(void)
+    {
+         std::cout<<"ptr data is: "<<*ptr<<std::endl;
+         std::cout<<"verum data is: "<<data<<std::endl;
+    }
+    
+    ~chk()
+    {
+        std::cout<<"inside destructor"<<std::endl;
+        delete ptr;
+    }
+     
+    chk& operator +(const chk& obj)
+    {
+         data = data + obj.data; 
+    }
+};
+
+
+int main()
+{
+   chk obb;
+  // chk *obj = new chk(10);
+  chk obj(19);
+  
+  obb = obj;
+  chk oo = obj;// copy const
+  obb.print_data();
+  oo.print_data();
+  
+  obb = obb + oo;
+  obb.print_data();
+  
+    return 0;
+}

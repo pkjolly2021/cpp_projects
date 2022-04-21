@@ -1,0 +1,41 @@
+//padding is based on the number of bytes red by cpu on each clock cycle.
+//so we need to keep the data types in ascending order to keep minim padding.
+// a  and b takes 2 bytes. since 4 bytes are rd at time 2 bytes are padded and after 4th byte location intiger data will store in 4 bytes.
+
+
+/******************************************************************************
+
+                            Online C Compiler.
+                Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <stdio.h>
+
+
+
+typedef struct test
+{
+    char a; // 1 bytes   0x 1000
+     char b; //1 byte    0x1001
+             //          0x1002
+             //          0x1003 padded       
+     int da;  // 4 bytes  0x1004 -
+                          // total 8 bytes
+}tt;
+
+
+int main()
+{
+    
+    tt obj;
+    obj.a = 'A';
+    obj.b = 'C';
+    obj.da = 32;
+    
+    
+    printf("size of struct %d ", sizeof(obj));
+
+    return 0;
+}

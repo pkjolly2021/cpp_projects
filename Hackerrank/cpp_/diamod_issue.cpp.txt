@@ -1,0 +1,100 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+///******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+
+
+class a
+{
+    public:
+    void pri(void)
+    {
+        cout<<"clas a"<<std::endl;
+    }
+};
+
+class b: virtual public a
+{
+    public:
+    
+};
+
+class c: virtual public a
+{
+    
+};
+
+class d: public b, public c
+{
+    
+    
+};
+
+
+
+int main()
+{
+    
+    d obj;
+    obj.pri();
+//    cout<<"Hello World";
+
+    return 0;
+}
+
+#include <iostream>
+
+using namespace std;
+
+
+class a
+{
+    public:
+    void pri(void)
+    {
+        cout<<"clas a"<<std::endl;
+    }
+};
+
+class b: virtual public a
+{
+    public:
+    
+};
+
+class c: virtual public a
+{
+    
+};
+
+class d: public b, public c
+{
+    
+    
+};
+
+
+
+int main()
+{
+    
+    d obj;
+    obj.pri();
+//    cout<<"Hello World";
+
+    return 0;
+}

@@ -1,0 +1,73 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+// Base class data whciuh is private cannot be accessed at any of the derivewd classes either drrived as public, private or protected
+// protected is mainly used to make the data assccessble to derived class objectes and it is not assccessble to putside World
+// So if third derived is not allowed to access, seond stage derived can be made as private dervied from base class. So SON cannot access the propert objectes
+// of grandfather, even if it is protected.
+
+
+#include <iostream>
+
+using namespace std;
+
+
+
+class grandfather
+{
+    protected:
+    int property;
+    public:
+    grandfather(int data): property(data)
+    {
+        cout<<"inside grandfather const"<<"property is"<<property<<std::endl;   
+    }
+    void get_property(void)
+    {
+        cout<<"grans father propery is: "<<property;
+    }
+};
+
+class father: public grandfather
+{
+    public:
+    father(int data): grandfather(data)
+    {
+        cout<<"inside sons const"<<std::endl;
+    }
+    void get_property(void)
+    {
+        cout<<"grans sons propery is: "<<property;
+    }
+    
+};
+
+class granson: public father
+{
+    
+    public:
+    granson(int data): father(data)
+    {
+        cout<<"grandson cosnt"<<std::endl;
+    }
+    void get_property(void)
+    {
+        cout<<"my property"<<property;
+    }
+    
+};
+
+
+int main()
+{
+  //  cout<<"Hello World";
+    granson obj(200);
+    obj.get_property();
+   // cout<<"proprt is"<<obj.property<<std::endl;
+    return 0;
+}

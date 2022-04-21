@@ -1,0 +1,54 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+
+template<typename T>
+void bubbl_Sort(T& arr, int size)
+{
+    for(int i=0;i< size; i++)
+    {
+        for (int j=0; j<size;j++)
+        {
+            if(arr[j] > arr[j+1])
+            {
+                int tmp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = tmp;
+            }
+        }
+    }
+    
+}
+
+
+
+int main()
+{
+    //cout<<"Hello World";
+    
+        int arr[] = {10,12,8,5,21};
+    //printf("Hello World");
+     bubbl_Sort(arr, 5);
+     for(int i=0;i<5;i++)
+     {
+         std::cout<< arr[i]<<',';
+     }
+
+     char str_arr[] = "debca";
+     bubbl_Sort(str_arr, strlen(str_arr));
+     for(int i=0;i<5;i++)
+     {
+         std::cout<< str_arr[i]<<',';
+     }
+
+    return 0;
+}

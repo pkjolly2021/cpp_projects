@@ -1,0 +1,24 @@
+//Little endian stores LSB in Lower order address
+//Big endian stores MSB in Lowe order address
+
+#include <stdio.h>
+union end_chk
+{
+    int a;
+    char b;
+}obj;
+//0x81//0x80
+//FF 00
+
+int main()
+{
+  obj.a = 1;  
+    if(obj.b)
+    {
+        printf("%i", obj.b);
+        printf("%s", "Little Endian");
+    }
+    //printf("%i", obj.b);
+
+    return 0;
+}
