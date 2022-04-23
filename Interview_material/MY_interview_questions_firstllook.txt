@@ -1,0 +1,1773 @@
+>> Luxsoft
+what are the charatersitics of adaptive applciation ?
+What is difference between map unorderd map ?
+wat is the complexity of map ?
+Initializer list in cpp ?
+What happns if crash in critical sction ?
+
+>> Where does this code gives compiler error? 
+#include <string>
+#include <memory>
+#include <iostream>
+
+class MyClass
+{
+  std::string s;
+  std::unique_ptr<int> p;
+};
+
+int main() {
+
+  MyClass a;
+  MyClass b;
+
+  b = a; // 1
+
+  b = std::move(a); // 2
+
+  return 0;
+}
+>>what is reserve in cpp for vector ?
+
+
+
+>> What are the functions called for empty class, once object is created for same?
+  Ans: 
+  Default construcntor,
+  Destructor, 
+  Copoy constructor 
+  Assignemnt operator
+  
+  will be called for empty class..
+  
+>> Why empty size of class
+   empty class size is one byte.
+   it is user defined data struture. It is dummy size.
+  
+   
+
+>> What type of design pattern is factory and singleton ?
+    class signleton
+	{
+	    private:
+		e
+	}
+   
+ans: Creational pattern
+
+>> How many times object will be created for factory pattern, draw block diagrm flow for design pattern ?
+ans:   Can create any number of objects
+
+>> What is Vtable, when base class with virtual function is created, which are classed will hace 
+ ans: Vtable is created by compiler and pointer is allocated when constructor for class is called. For all the class whcih has virtaul function will have vtable.    
+         Each class have only one vtable allocated.
+        All the object created for class will share same vtable 
+
+
+>>  Vtable created ? How many vtable will be created for a class ? 
+     Compiler will create the vtable and only one vtable is created for one class.
+	 	 
+	 When you create an object using "new" with memory allocated in heap memory a vtable pointer is alocated with it, whcih points to vtable of specific class.
+	 So vptr is crested during run time while construcotr of class is called.
+	 So as better practice, it is better to make base class as virtaul when it derived and if we delete base pointer whcih is copied to base class pointer.
+	 vptr will have the address of static vatble of the object created. 
+	 
+	 base *ptr = new derive(); // here vptr will have the pointer to static array of derved class.
+	 >> if a method is not overriddenn, then the method executed will be from type of pointer of class.
+	 >> Early binding - WIll be done for functions whcih are not declared virtual will be done early binding by compiler.
+	     we donot have vptr value during compile time. So for early binding, will execute the function whcih is based on type of pointer.
+		 Below function will be ear;y binded and since type of pointer is base, function exected will be function from base.
+		 
+                   late Binding:- 
+		 Late binding will be done for functions whcih are declared as virtual and will execute the fucnion based on vptr value and whcih vtable it is pointing to.
+		 vtable will have only virtual function of class..
+	 
+	 Ex: 
+	 
+	  class base{
+	 public:
+	 void fun(void);
+	 {// base}
+	 };
+	 
+	 class derived: public base{
+	 public:
+	 void fun(void);
+	 {//derived}
+	 };
+	 void main()
+	 {
+	  class base *obj = new derive();
+	  obj->fun(); // will early binded, and will execute base class function, since pointer type is of base.
+	  }
+	 
+	 Ex: // Example program
+#include <iostream>
+#include <string>
+class base
+{
+    public:
+     base()
+     {
+       std::cout<<"base Construcotr"<<std::endl;
+     }
+	 virtual ~base()
+	 {
+	     std::cout<<"base destruceor"<<std::endl;
+	 }
+};
+class derived:public base
+{
+   public:
+     derived()
+     {
+       std::cout<<"Derived Construcotr"<<std::endl;
+      }
+    ~derived()
+	 {
+	    std::cout<<"derived destruceor"<<std::endl;
+	 }
+};
+int main()
+{
+    base *a = new derived();
+    delete(a);
+}
+		  
+
+>> Study more design pattern ?
+
+>> Explain bridge design pattern ?
+
+>> What happens if (*this) pointer is deleted in destructor ?
+    if this pointer is deleted inside destructor it will be a continues loop since delete this pointer will again calls the destructor and will become loop.
+	If a this pointer deleted inside method, nest time when access the varibale inside method, code will crash. Since internally compiler use this to direct 
+	different variables in class..
+
+   This is compilation error since (*this) points to value which it points by the pointer stored in "this". So it will reurn error saying - "delete expect a pointer"
+   But we can delte this pointer directly. delete(this) -- Correect
+                                           delete(*this) -- Wrong, since it doesnot delete pointer..
+
+    * A "this" pointer is a default parameter to all the methods of the class, except friend function.
+	* When passing as referance, can use dot operator to access the private data..
+	
+	Ex:
+
+     // Example program
+     #include <iostream>
+     #include <string>
+
+	 class comp
+	 {
+	     int data;
+		 
+		 public:
+		 comp(int val):data(val)
+		 {
+		    std::cout<<"Inside comp constructor"<<std::endl;
+		 }
+		 
+		 //pass by refernce to avoid copy constructor invoke. can access the referce data using dot operator!!!!
+		 void compare(comp &da)
+		 {
+		     if (this->data > da.data)
+			 {
+			    std::cout<<"current data is big"<<std::endl;
+			 }
+			 else
+			 {
+			     std::cout<<"current data is small"<<std::endl;
+			 }
+		 }
+		 
+		 comp(const comp &obj)
+		 {
+		     std::cout<<"INSIDE COPY CONSTRUCTOR"<<std::endl;
+		 }
+	 };
+	
+
+int main()
+{
+    comp obj(533);
+	comp obj2(10);
+
+	obj.compare(obj2);
+	
+	//copy constructor will be called..
+   	comp obj3 = obj2;
+}
+	
+	
+	
+>> What is funtion overloading and Overriding ?
+   Ans: Function overlaoding means function with same name and different number of arguments or different types of arguments.
+         Function overlaoing can be detected during compile time by compiler.
+		 Overloaded functions should have same return value type.
+		 
+		 Ex:
+		      int fun (int a)
+			  int fun (char da)
+		 
+		 Ex: void fun(int a, int b)
+		     void fun (folat a)
+			 
+		 Function Overriding happens at run time, where in run time decision will be taken decide whcih function to be executed. Virtual key word(polymorphisam) can be used for function overriding.
+		 class base
+		 {
+		      public:
+			  virtual void fun(int data)
+			  {
+			     cout<<"inside base"<<endl;
+			  }
+		 }
+       class derived: public base
+        {
+                void fun(int x)
+				{
+				    cout<<"inside derived"<<endl;
+				}
+        }		 
+		void main()
+		{
+		    base *obj = new derived(); // instantiate the derive dobject.
+		    obj->fun();// will go derv function....
+		}
+    
+>> How many times object will be created for facotry pattern ?
+   AS many times it is called.
+
+>> How to get each digit of of an intiger string ?
+    int num = 0;
+   while(str[i] != '\0')
+   {
+        num = num*10+str[i] -'0';
+    }
+   
+>> UML? 
+   FLow diagram.
+   
+>> thread and Mutex working and how it is used in project ?
+   * In phone service we have multiple threads are created for each phone instance. But read function is same for all the instance So it is protected by 
+     mutex to avoid accesss by different instance. 
+   * Netaccess service we have one thred.
+   * Each phone instance have separate thread with private structure.
+      
+
+>> Major fixes and implementations ?
+   Wide band SIRI, Implementaion of callback function to application. Fix given in PIM service to avoid MAP connection failure due to no respone from remote device and
+    response received after 180 seconds. Fix is given to update flag in BSS service using a call and if the response received after time out in CMAP, Will disconnect transport.
+    and delete the handle.
+
+>> What is Agile ?
+   Rally is used to track the work flow. Sprint is defined for fortnight.
+
+>> Which process follow to take up the CHnage Requests ? Agile or Water flow ?
+   Agile.
+
+//Microchip
+>> How to avoid critical section without mutex and semaphore ?\
+Mutex: Mutex is mutually exclusive lock. Whcich can unlocked by only the thred which creates the same. In PIM code mutex is used with wrapper class Clock 
+      to make sure that mutex will be getting unlcked once wrapper object goes out of scope.
+      Mutex can be considereed as single variable where in the value is reduced to 0 once it aquired and 
+
+      critical section in phone service is like read function dtmf, response call back.
+	  >> MUTEX CAN BE used for lock within a process, since scope is within process. will be removed once process is removed by kerenl.
+	  
+
+Semaphore:
+   
+  Can be used to solve critical section issue - binary seaphore.
+  Can be used to fix order of execution of thread - couting semaphore.
+  resource management.
+  
+  >> SEMAphore has system scope, So it can be used for process synchoniztion.
+
+Is a intiger variable whcih is iniialised to one. wait and signal are atopmic opertions to manage critical session.
+If it is initialsed with one
+
+sema_wait(s) //will reduce the varibel to 0
+{
+    while(s<=0);
+    s=s-1; // decrement s to zero so next time if some other thread try to access the critical session, iit will be in wait.
+}
+// to oncrement the sema varibale and unlock the critical section.
+sema_signal()
+(
+  s= 1;
+)
+
+signal(s)
+
+Semaphore used in project to where in different threads are running for different instances of phones connected. - > sPhone_ProcessThread() and private structre is maint
+ined for each phone connected...
+A semaphore 
+
+
+>> How to initialize a two dimansional array ?
+   Ans: code is written in cpp function folder
+   
+   int arr[2][4];
+   
+     [80][82][84][86]   
+ [80] 2,  3,   4,  5
+ 
+     [88][90][92][94]
+ [88] 5,  6,   8,  9
+   
+   
+   int **p;
+   
+   p = new int*[2];  //initlaize array of pointer 2 
+   p[0] = new (int[4]);//get mem for  array of size 4 and allocate to array of pointers.
+   p[1] = new (int[4]);//
+
+// read data
+   for(i=0;i<2;i++)
+   {
+      for (j=0;j< 4;j++)
+      {   
+         p[i][j] = count;
+      }
+   }
+// write data
+   for(i=0;i<2;i++)
+   {
+      for (j=0;j< 4;j++)
+      {   
+         cout << "data is p[i][j]"<<p[i][j]<<endl;
+      }
+   }
+				
+   
+   
+>> Study function POINter based on Phone service application...
+   typedef int (*Callback)int a;
+   
+#include<stdio.h>
+
+typedef int (*Callback) (int a);
+void print_dataa(Callback fun, int nu);
+int print(int dat);
+int print_2(int data);
+   
+int main() 
+{
+  print_dataa(print_2, 999);
+}
+
+int print(int dat)
+{
+  printf("data = %d",dat);
+}
+int print_2(int data)
+{
+   printf("print_2 data = %d",data);
+}
+   
+void print_dataa(Callback fun, int nu)
+{
+   fun(nu);
+}
+
+>> CHECK ON BASIS OF PIM OR NAV CODE HOW IT IS IMPLEMENTED STATIC AND DYNAMIC POLYMORPHISAM AND DESIGN PATTERN
+
+>> Write a pgm to convert intiger string to intiger ?
+int num;
+   for (i = 0; i< strlen(arr); i++)
+   {
+      num = num*10+arr[i]-'0';   //'0' = 48(ascii value) --will give left value and add with the number mult by 10 each time.
+   }
+
+>> Explain how profiles works, how multi party call is handles using AT commands ?
+
+   waiiting call needs to be activated CCWA
+   CHLD command can be used to make call to accept and hold
+
+>> What is clock frequency whcih data is transmitted in Blue tooth ?
+Ans: It employs a frequency-hopping technique. 1600 hops per second over 79 channels. That means that data is only present for 625us on any one channel,
+
+
+   Bluetooth has 79 chanels from 2.402GH to 2.480 GH
+   Data is transmitted over this 79 channels of 1 mhz bandwidth over time slot of 625 micro seconds. BT 2.1 +EDR supports data transfer up to 2.1 Mbts/seconds.
+      
+
+Refer link -- http://www.anotherurl.com/library/bluetooth_research.htm
+       http://ecee.colorado.edu/~ecen4242/marko/Bluetooth/Bluetooth/SPECIFICATION/Baseband.htm
+       >>>>BT APPLICATOIN DEV GUIDE <<<<<   https://books.google.co.in/books?id=0N3D1kRAoT8C&pg=PA82&lpg=PA82&dq=Do+we+need+ACL+link+while+inquiry+and+paging+?&source=bl&ots=niWhCddOkj&sig=8hXXVcAkipxSqQciHKJB_jekmzU&hl=en&sa=X&ved=0ahUKEwi10J6muufVAhVKuY8KHVHABgwQ6AEIXTAJ#v=onepage&q=Do%20we%20need%20ACL%20link%20while%20inquiry%20and%20paging%20%3F&f=false
+
+
+>> What is sniff mode ?
+Sniff mode is a periodic mode of controller goes to sleep mode and wakes up and check if data is transmitted by master. If data is send from master slave will
+wake from sniff. No data can be transmitted during sniff mode. After wake from sniff mode clock will be shared further with master and slave.
+
+>> Do we need ACL link while inquiery and paging ?
+   Not necessary. After paging master will share AM (Active mode three bit address with slave), so ACL is established.
+
+>> Is it possible to transmit the data during sniff mode ?
+   No data transmission during sniff mode.
+
+>> When is sniff mode is needed ?
+  nO Null and Poll packet will be transmitted during sniff mode. Chip will wake up after few seconds set to check the data send 
+  by master... No data transmission during sniff mode. So once the slave is in sniff mode, if any data send by master will be pending untill 
+  next sniff mwake up.
+
+>> When we pause A2DP, can we go to sniff mode ?
+   Yesit is possible.
+   
+>> What is clock pulse works to transmit data ?
+   Clock will help to synchronize the data transmission os data packet. It will make sure that master and slave is sync with clock or Master and clock has same clock.
+   
+  This 26-bit field shall contain the value of the native clock of the device that sends the FHS packet, sampled at the beginning of the transmission of the access 
+  code of this FHS packet. This clock value has a resolution of 1.25ms (two-slot interval). For each new transmission, this field is updated so that it accurately
+  reflects the real-time clock value
+
+
+>> What is slot and packet in Blue tooth?
+   Each slot is 625 Micro seconds. Each channel is of 1 Mhz frequency difference for 625 Micro seconds.
+  
+>> Is it possible to transmit data during NULL and POLL packets ?
+    No data is transmitted using NULL and POLL.
+
+>> What is address bus and is there any way to increase the address bus to access outside memory since memory accessible for
+   8 bit controller is only 256. 
+    8 bit controller means - 8 bit data bus - Means, processor can execute one byte of data at in single clock pulse...
+>> What is little and big endian ?
+    Big endian - MSB in Low adddress and LSB in High Address
+    Little endian - MSB in High address and LSB in Lower address
+    
+MSB- 0000 0000       LSB - 0000 0001
+     LOW address     High Address
+
+    int data = 1;
+    char *poi = (char*)&data;
+    if(*poi)
+       {
+           printf("LITTLE ENDIAN");
+        }
+     {8888888888888nnnmmnnbv
+        printf("BIG ENDIAN");
+     }
+    
+>> What is stack unwinding, Issues with passing the data as pointer to function?
+>> If we try to accecss intiger array data unsing char pointer, Will it print in same order or it will have dependacy over 
+   Endian ?
+   It wwill have dependancy on Endian, since intiger is of two bytes. 
+   Big Endian will store MSB in Low address location.
+   Little Endian will store MSB with High address location.
+
+>> what is time period of HV1 packet, what is size of HV1 packet ?
+
+>> What is volatile ? How does it works??
+    *volatile key word will help to get cpu register for stroing data.
+	
+	A variable should be declared volatile whenever its value could change unexpectedly. In practice, only three types of variables could change:
+
+1. Memory-mapped peripheral registers
+         ///volatile intiger // const pointer
+     Ex:   uint8_t volatile * const reg_ptr = (uint8_t volatile*)0x800000;
+	 
+2. Global variables modified by an interrupt service routine
+       
+     Ex: uint8_t volatile const reg_ptr;
+
+3. Global variables accessed by multiple tasks within a multi-threaded application
+	 Ex: uint8_t volatile const reg_ptr;
+	 
+	 
+	It turns out that pointers to volatile variables are very common, especially with memory-mapped I/O registers. Both of these declarations declare pReg to be a pointer to a volatile unsigned 8-bit integer:
+
+    volatile uint8_t * pReg; 
+    uint8_t volatile * pReg;
+	
+	
+      or 
+      Ex: volatile int x;
+          a = x;
+          b = x; // compiler will go and read agaoin from memory vlaue of variable x
+
+		  If we do a compilation using option for optimization only virtual will have effect. OPtimized compilation will help to reduce the si ze of the binary size. Since compiler will take some variables which are const assignement updets neglected from code.
+		  
+		  >> If compile below code after optimization, it will print only 10 twice, because compiler will take assigning values to address of variable doesnot affect, since it is const variable. But if we keep t vaiable as volatile data will change to 100, since compiler will avoid optimization of code. And binary will become big size.
+		  Ex: 
+		  void mian()
+		  {
+		       const int data = 10;
+			   
+			   printf(" data before chaning const vari in pointer = %d", data);
+			   int *ptr = &data;
+			   *ptr = 100;
+			   printf(" data after chaning const vari in pointer = %d", data);
+		  }
+		  
+
+>> Write a code for ineritacne in cpp, what is the use of inheritance and polymorphisam ?
+  Basically inheritance and virtual key word helps to attain run time polymorphisam whwre in we are able to decide multiple functionalities at run time. And we can 
+  
+>> class s
+   {};
+    What are funtions called while making object the above class ?
+>> class b
+   { 
+      public:
+       int fun (int b)
+       {}
+    };
+
+    Will this code compile ?
+  >> Yes it will compile.
+  
+  >>https://barrgroup.com/Embedded-Systems/How-To/C-Volatile-Keyword
+
+>> Char strin[] = "123456"; , How to write it separately ? Does it writes in order or Big and LIttle endian has something to do with this?
+   
+
+>> What is the way to protect critical section without using Semaphore or Mutex ?
+
+>> How does ISR works ? For Time slot switching scheduing, How the CPU decides time for specific process has end and next process has to taken over ?
+
+>> What are deffernce between inlne and usual function calls. ?
+
+when u declare afunction as inline, it is request to compiler to consider same as inline and replace code while compile time. To loading time of function at run time.
+
+>> int arr[] = {1,2,3,5,6}
+   how will you print 1,2,3 separatly ?
+   
+
+Eaplain about project
+What are all the inter process communication?
+Ans: Shared memory and message passing.
+     https://www.youtube.com/watch?v=dQE6BDNc3z0
+
+BT:
+
+Explain about deatils on SCO and eSCO packets in details? Ex HV1 HV23,HV3 and DV == eSCO - EV3 EV4 EV5.
+data transmitted 64kbits/seconds
+What is credit in RFCOMM connection ? Hoe does credit related data transmission works?
+During data transmission, a buffer size will be credited to transmitter. So each time it transmit data buffer size will get reduced and reaches to zero. Further redit has 
+to be granted by receiver for transmitter to sahre moer data.
+RFCOMM works on credit based transmission. If no credit is available with transmitter, Transmitter cannot transfer data.
+
+
+
+Defference between mutex and semaphore?
+https://www.youtube.com/watch?v=DvF3AsTglUU
+Latest: ----  http://www.thegeekstuff.com/2012/05/c-mutex-examples/?refcom
+Latest 2---------https://www.youtube.com/watch?v=LL8wkskDlbs
+
+Linked list
+Which are all the data structers used for coding?
+Threads?
+What are all the data segments?
+Allocation of data segment in memrory
+Is the stack segment over laps data segment?
+defrence between static, volatle memmory
+Ans: http://www.youtube.com/watch?v=ImHW6I0BoEs
+
+
+usage of const?
+how the data will be updated if the pointer of data is passed as argument to the function?
+how will be stck operates when variables are decalred inside scope as local variable ?
+>> Return of a local varibale address is not good, since stack will tremove the variable from stack when returing from function and further operation on address will lead to segmaentation fault.
+
+What is the bluetooth stack vesion 2.1EDR
+What is the use of L2CAP?
+How many number of SCO can be present in one connection?
+Ans: Depends on master and client it varies. # can be from master and 2 with client
+AT command setails.
+Thread Dead Lock
+
+structre padding?
+WHile decalaring a structure, data is arranged in such a way that
+1 byte - Mem add multiplied by 1
+2 byte - Mem add multil by 2
+4 bytes Mem add multiplied by 4.
+
+This is depended on the how many bytes of data does processor can execute in a single clock pulse..
+
+//supose we have 32 bit processor.(one word is 4 byte, which can operate on 4 bytes in sigle clock pulse)
+struct my_str
+{
+
+ char dat1; // takes one byte and next 3 bytes are padded by compiler
+ int dat2; //intiger will take 4 bytes - no padding is needed
+
+}// so total size of struct is 8 bytes instead of 5 bytes
+
+>> IT is always good to arrange structure variables arrange in ascensing order.
+
+Pragma can be used to avoid padding. alloation of extra memory in na strucure is called padding. This will waste a lot momory 
+#Pragma pacjk (1) will tell compiler how much memory needs to be alloacted
+
+array of call back function?
+typedef void* (*callback)(void*);
+callback fun[10];
+
+function pointers?
+
+DUN connection?
+DIal up networking
+Uses internet inside phone. 
+
+SCO and eSCO
+Extented SCO whcih is synchronized way of communication.
+mSBC - Modified Sub band codec is used as codec - is used only for eSCO.
+16 KHZ is frequency for WBS (Wide band Speech). 
+Narrow band codec - CVSD
+In-band ring tone"
+
+BT frequency 2.402 to 2.482 GHZ
+How connection establish while BT connection happends?
+Use of RFCOMM?
+Bluetooth profile?
+Features of SIMAP?
+APDU - Application Protocol Data Unit
+
+What is octal literal in C
+What is stream ?
+What is local in C?
+what is packet i CAN?
+
+What is ISR ?
+
+How to use const voatile?
+use of fork?
+When fork is called, is it possinle to make of variable in parent process used with child process ? COW Concept..
+Create funtion pointer and typedef same.
+Write a progam to toggle th LED whrn an interrupt is received.
+Semaphore, Mutex ?
+
+What is reenternt code ?
+How to make a reentrent code ?
+Type of inter process communucation.
+Socket, Pipe,Queue.
+Difference between process and therad?
+
+A process will have its own code, data file stack segment. A process will have atleast one thread. But in case of thread, each thread in a proces share same 
+Code, data and file segment wehre as stack and register will be different for each thread.
+
+What is advantage of havnig multiple processors ?
+
+How to synchronize write and read from same buffer ?
+
+CPP &C
+
+COnditional wait mutex ?
+Ans:
+
+Where is initialized and uninitialized static variables will be stored in memory ?
+Ans: http://www.geeksforgeeks.org/memory-layout-of-c-program/
+
+     Code segment(Text segment) - Whcih contains exceutable instructions....
+	 Usually text segment is sharable and read only to prevent code to accidently change instructions. ..\
+	 
+	 INitialized Data segment - Global ans static variables initialized by programmer...
+	 [
+
+	 Uninitialized data segment or BSS(BLock SYmbol segment): Non initialized variables..
+	 	 For instance a variable declared static int i; would be contained in the BSS segment.
+         For instance a global variable declared int j; would be contained in the BSS segment.
+	 
+	 Stack:
+	 Is used to store the local variables 
+	 
+	 What will happen when declare same static variable global and local ? 
+	 Depends up on scope it can be acceesible..
+	 
+	 Heap:
+	 Dynamic memory allocation.
+	 
+     Details of Email in PIM.. How many instance are supported ? How will be sync happen ? 
+     How to configure in phone Email? What all emails are supported ?
+	 How many instance can be synced at time ?
+	 
+	 How take care of different languages in PIM service ?
+	  By using ICU librabry.
+     What is ICU librabry ?
+	 
+	 When a call is comes when audio stram is ongoing ? who will pause the streaming of data ?
+	 Could be application..
+	 
+    What is static functions ? -- Whcih should be used only with in the file...
+	
+	INFO-----> scope resolution operator can be used in cpp to isentify the global and local variable decalararion.
+	
+	When is copy constructor needs to be used in programm ?
+	if we have pointer variables inside class, since it may lead to segmentation fault, if object is copied as shallow copy and object goes out of scope and 
+	address
+	When we define a copy constructor why refernce is used ?
+	WHat is use of deep copy ?
+	
+	If deep copy is not used, it can lead to dangling pointer memoory issue, where in if object copied is destructed while it is out of scope and delete the pointer, then paretnt object tried to access the pointer varibale may lead to crash, since it is already removed by seccond one. 
+	
+	>> If object allocated is done shallow copy and if one object is going out of scope can lead to release of memory. This will lead to crash, if other object tries 
+       to acces same variable again whcih is not existing.
+	   
+	   Ex:
+	   
+	   class test
+	   {
+	   int data;
+	   int *poi;
+	      public:
+		  
+		  test(int *dat, int da)
+		  {
+                   poi = new (int);
+		   *poi  = *dat;
+		   data = da;
+		   }
+		   
+	   }
+	   
+	   main()
+	   {
+	   int data = 100;
+	       test obj1(&data, 200);
+		   {
+		   
+		       test obj2 = obj1; /// here it will do a shallow copy and pointer alos getcopied. But once destructor is called, pointer at will ge deallocate 
+			                          So if obj1 again tries to access the same data again using pointer it will lead to crash. So we use coy constructor to avoid 
+									  this.
+		   }
+	   
+	   }
+
+   Qu: What happens if exception is thrown from destructor?
+        Cpp cannot handle multiple exceptions. If we are throwing exception in destructor, anf if a funcion has object of a class and same function is thrwoing exception and if function throws exception, stack unwiding will happen and destructor of oject is called and desrtuctor again may call exception, whcih will lead to crash.
+		
+
+   Qu: How MAP container class is used in project ?
+
+      >>MAP is key value pair based associctive array, it is stored in binary tree. in ascending order. A pair class is used to store each time when insert    MAP data.
+        In our proect we are using handle and connection pointer in MAP container class. To identify the pointer using handle we use key vlaue pair.
+      
+     
+   Qn : How does container class Vector is used in project ?
+       >> Vactor is used to store the access control linke  
+      BluetoothStandalone,
+      BluetoothHfp,
+      BluetoothSimap,
+      File,
+      Online,
+      Nfc
+	  
+	  >> Atatched device object. vector<tDevice> Devices;
+	  >> Object type.
+         ObjTypeInvalid = 0,
+         ObjTypeContacts,
+         ObjTypeCalendar,
+         ObjTypeTasks,
+         ObjTypeNotes,
+         ObjTypeEmails,
+         ObjTypeMms,
+         ObjTypeSms,
+         ObjTypeCallstacks,
+         ObjTypeSimuCallstacks,
+         ObjTypeReminders,
+         ObjTypeIm
+		 
+   Qu Wat is smart pointer in cpp ?
+       shared pointer, which is wrap around for a pointer object, to make sure that, pointer is deleted once scope goes out.
+
+   Qu: What  is STL in CPP ?
+   ---------------Standard Template Library
+   Component	Description
+                Containers	Containers are used to manage collections of objects of a certain kind. There are several different types of containers like deque, list, vector, map etc.
+                Algorithms	Algorithms act on containers. They provide the means by which you will perform initialization, sorting, searching, and transforming of the contents of containers.
+                Iterators	Iterators are used to step through the elements of collections of objects. These collections may be containers or subsets of containers.
+				
+   CALL SGPimMgr_PimMgr:22 PimMgr_SynchronizeExt pimmgr_id=3 renew=TRUE queue=2 obj_types={ { obj_type=PIMMGR_OBJ_TYPE_SMS, obj_type_props={ { key='Mode', value='PIMMGR_SYNC_TO_DEVICE' }, { key='Instance', value='SMS/MMS' }, { key='Folder', value='outbox' } } } } sync_props={  };
+       Key can be error Value can be abort, timeout, parmater error
+       Key can be folder and value can be inbox outbox sent 
+       key can be mode and Value can be sync to device and sync from device.
+   
+   
+   
+   
+   What is exception handling in CPP?
+   ANs:   Try catch and throw..
+   
+   What happens when exception happens with constructor and destructor ?
+   Is it ok to have exception handling with constrcutor?
+   
+   Is it good to have exception handling with destructor?
+   Ans: 
+   The C++ rule is that you must never throw an exception from a destructor that is being called during the “stack unwinding” process of another exception. For example, if someone says throw Foo(), the stack will be unwound so all the stack frames between the throw Foo() and the } catch (Foo e) { will get popped. This is called stack unwinding.
+   
+   
+   Binray tree sorting
+
+  >> Mind Tree>>>
+
+   Started with BT:
+   Draw  the block diagram of COnnectivity project.
+   >> What are the things to be taken care if we are going to change the stack vendor ?
+   >> Since process SCP has many threads running, how will so much of data is synchronized in BSS to download the data? 
+
+   >> Does HFP is really needed to conncet MAP and PABAP ?
+       Ans: Not mandatory to connect HFP. We can connect without HFP also.
+
+   >> When we say that HFP connection happened successfully ? What are commands needs to be send for service level connection?
+
+
+      BRSF, BAC=1,2, CIND, CLCC, CHLD.
+
+   >> How did the base destructor will be called when a derived class destructor is called ?
+      It uses polymorpisam or vtable to call the dervied destructo first and then calls base destructor.
+      
+   >> Will there be a vtable for a class for which a destructor is declared as virtual ?
+      Yes.
+
+   >> What if "*this" pointer is deleted in destructor ?
+      *this will give compilation error, since *this points to data. Can use delete(this), 
+      but still this can lead to crash, since destructor actually delete this pointer.
+
+   >> Write code to check the number of once in n intiger ? in C 
+      int i =32;
+
+#include <stdio.h>       
+ 
+/* Function to get no of set bits in binary
+    representation of positive integer n */
+unsigned int countSetBits(unsigned int n)
+{
+  unsigned int count = 0;
+  while (n)
+  {
+    count += n & 1;
+    n >>= 1;
+  }
+  return count;
+}
+ 
+/* Program to test function countSetBits */
+int main()
+{
+    int i = 9;
+    printf("%d", countSetBits(i));
+    return 0;
+}
+      
+      
+   >> How to set the bits in intiger within a range... say set all the bits in a string from 13to 20.in C
+
+   >> How SCO is connected after call is established ?
+      SCO is connected by remote device and SCO connection also can be initiated by HU, if the SCO connection is getting timed out.
+
+   >> Who will be intialting the SCO conenction ? AG or HU ?
+   >> How does different ?
+   >> How  many L2CAP is needed for MNS and MAS ?
+      Ans: Two different channels are necessary for MAP and MNS. But we need to have MAS connection to establish MNS connection.
+           MNS connection is triggered by remote device.
+
+   >> who will be initiating SCO connection? 
+   Master will be initating SCO connection..
+
+   >> What is message notifcation on and Notification registration?
+   >> Font Line tool is used to check HCI and PROTOCOL logs.
+
+>>>Aduiance
+
+What is a static function ?
+>> In CPP, when you declare a function as static, it becomes object independednt and can be called by using '::' operator. 
+
+    Ex: // Example program
+#include <iostream>
+#include <string>
+
+class myclass
+{  
+    private:
+       static int data;
+    public:
+       static void add_data(void)
+       {
+          data++;
+          std::cout<<"static data is data "<<data<<std::endl;
+       }
+};
+        
+int myclass::data = 20;
+int main()
+{
+    myclass::add_data();
+}
+
+>> In  C static function will means private copy of function. which cannot be accessed by other files.
+>> Unlike global functions in C, access to static functions is restricted to the file where they are declared. 
+   Therefore, when we want to restrict access to functions, we make them static. Another reason for making functions static 
+   can be reuse of the same function name in other files. 
+
+>> What is the size of empty class in cpp ?
+
+
+=================================
+What is difference between Macro and inline ?
+
+Inline Function
+
+Preprocessor Macro – good for declaring constnts eg. #define PI 3.14
+Provide textual substitution
+Each time the macro name is encountered with arguments, the arguments used in its definition are replaced by the actual arguments found.
+
+1. Inline Function:
+
+  It is a function provided by C++.
+  It is declared by using the keyword inline before the function protoype.
+
+    Macro:
+   It is a a preprocessor directive provided by C.
+   It is declared by using the preprocessor directive #define before the actual statement.
+
+2. Inline Function:
+
+   Expressions passed as arguments to inline functions are evaluated once.
+
+   Macro:
+   In some cases, expressions passed as arguments to macros can be evaluated more than once.
+   Every time you use an argument in a macro, that argument is evaluated.
+
+   #define max(a,b) (a>b?a:b)
+
+   void main()
+   {
+      int a = 0;
+      int b = 1;
+      int c = max(a++, b++);
+      cout << a << endl << b << endl;
+   }
+   The intention is to have the program print 1 and 2, but because the macro is expanded to:
+   int c = a++ > b++ ? a++ : b++;
+   b will be incremented twice, and the program prints 1 and 3. //try
+
+
+3. Inline Function:
+    They are parsed by the compiler.
+	Inline function helps to reduce jumping time of normal function.
+	Inline funcmtion is only request to compiler. It is compiler has to decide whether to take it as inline.
+	if recurusiion or loop or goto statements are used inside code, it can be ignored by compiler to accept as iniline and it will be treeated as normal function...
+	
+	Macro:
+    They are expanded by the preprocessor at pre-compile time.
+
+4. Inline Function:
+
+   Inline functions follow all the protocols of type safety enforced on normal functions.
+   Argument types are checked, and necessary conversions are performed correctly.
+   The compiler performs return type checking, function signature before putting inline function into symbol table.
+   They can be overloaded to perform the right kind of operation for the right kind of data.
+
+   Macro:
+   
+   No such thing, hence, macros are more error prone as compared to inline functions. the The parameters are not typed (the macro works for any objects of arithmetic type).
+   No error checking is done during compilation.
+   
+   Eg. you can pass strings to a macro that does some integer arithmetic
+   #define MAX(a, b) ((a < b) ? b : a)
+   int main( void)
+   {
+     cout << "Maximum of 10 and 20 is " << MAX("20", "10") << endl;
+    return 0;
+   }
+
+5. Inline Function:
+   Can be used for debugging a program as they are expanded at compile time and a break point caa be placed at the inline function adefinition and step into the method for debugging step by step.
+   Macro:
+   Can not be used for debugging as they are expanded at pre-compile time.
+
+6. Inline Function:
+   Inline member functioncs can access the class’s member data.
+   
+   Macro:
+   The preprocessor has no permission to access member data of a class and are thus useless even if used within a class. Thus they can not even be used as member functions.
+Eg.
+
+#define VAL (X::i) // Error
+class X {
+  int i;
+
+public:
+  ---};
+
+7. Macro:
+Parant   hesis need to be handled carefully as missing a pair or putting an extra pair may prouce undesirable results.
+
+8. Inline Function:
+   Inline functions may or may not be expanded by the compiler. It is the compiler’s decision whether to expand the function inline or not.
+   Macro:
+   Macros are always expanded.
+
+9.Inline Function:
+   It can be defined inside or outside the class.
+  Macro:
+   It can not be defined inside the class.
+
+10. Inline Function:
+    Inline functions pass arguments by value, just like regular functions do. If the argument is an expression such as 4.5 +7.5 then the function passes the value of the expression 12 in this case.
+	
+Macro:
+   Expressions passed into macros are not always evaluated before entering the macro body.
+   Macros don’t pass by value.
+
+   Thus , #define square(x) x*x
+   b=square(4.5+7.5)
+    This will be replaced by : b=4.5+7.5*4.5+7.5
+
+11: Inline Function:
+    Since type checking can be used in inline functions, their problem can be avoided.
+	Macro:
+	Expressions may expand inside the macro so that their evaluation precedence is different from what you expect.
+
+Eg.
+   #define FLOOR(x,b) x>=b?0:1
+    Now, if expressions are used for the arguments
+    if(FLOOR(a&0x0f,0x07)) // ...
+    the macro will expand to
+    if(a&0x0f>=0x07?0:1)
+    The precedence of & is lower than that of >=, so the macro evaluation will surprise you.
+
+
+<**> All the methods defined inside class defenision is treated as inline. To make sure inline function implicitly need to declare the function inside 
+     class and define it as inline outside class.
+	 
+	 Ex:
+	 class test
+	 {
+	    public:
+		viod test (void);
+	 };
+	 
+	 inline void test (void)
+	 {
+	    cout<<"inline function"<<endl;
+	 }
+
+
+>> If you declare a variable static in headerr and use it in two different files what will be behaviour ?
+   Variable will be accessible only inside the file where it declared. TO make access the static variable modified inside another file, we can pass address of 
+   static variable in function.
+   A variable to be accessed another file we need to use extern key word.
+
+>>What is dangling pointer  ?
+Ans: Dangling pointers arise during object destruction, when an object that has an incoming reference is deleted or deallocated, without modifying the value of the pointer, so that the pointer still points to the memory location of the deallocated memory.
+* In CPP, always need to use deep copy(copy construtctor) to avoid dangling pointer.
+
+>> What will happen if address of a functioon or variable return from a function to another funtion ?
+   Ans: Can lead to dangling pointer.
+ 
+What is segmentation fault ?
+If try to access memory which is not alloted for specifc process, can lead to segmentation fault. Access adangling pointer can lead to segmentation fault.
+
+What is virtaul key word and where it can be used?
+For polymorphisam.
+How a data drop finds out while streaming a song ?
+what is differnec between mutex and semaphore ?
+WHat is priority inversion in RTOS ?
+
+reset a bit in a 32 bit intiger ?
+#define RESET(num, pos) num ^= (1<<pos)
+
+
+n number of bolt manu units make 10 mg bolt, but one give 9 mg bolt, find out which mechine do it ? wheing only once
+
+
+> extern key word
+
+   Exern is used to declare the variable not define.
+   int a; // define a varibale. 
+   extern int a; // only declared..
+   So when extern is used u should have the defenision some where in code 
+
+
+>> What is encapsulation ?
+ terms Encapsulation is defined as wrapping up of data and information under a single unit. In Object Oriented Programming, Encapsulation is defined as binding together the data and the functions that manipulates them
+================================================
+
+MAP PBAP expected questions-
+
+> If multiple devices are connected how handle is defferentiated between two devices?
+  <*> using pimmgr ID whcih will be created for each Pimmgr open.
+  
+> How multiple threads are implemented in pim service ?
+  <*> 
+
+> What are all the design patterns used in PIM service ? singleton and factory method
+    
+> How many devces can be connected for PIM service ?
+  <*> Depends on HFP instance . Max 2 , OPP can be connected as third.Onlineservice.
+
+> How many MAP and PBAP instance are possible with same phone ?
+  <*>only one can be connected at a time. Multiple for different.
+
+> If a new message is received at remote device, do we need to sync again ?
+  <*>MAP handle is used to get the new SMS. Application has to call sync call. It can be complete or partial.
+
+> If we delete sms or vcard from HU how it is notified to Remote device ?
+  resync -- or indices sync for specific handle 
+  set notification is sent ot phone. Phone will be updated. BSS_MAP_Delete.
+
+> What are all the SMS and PBAP data format received and send from HU and Phone  - PDU or UTF
+  
+> How does concatnated messages are handled ? 
+  
+> Does RFCOM session needs to have a SDP ? not necessary since they are parallel
+  SABM command is used to RFCOMM new RFCOMM channel.
+
+> How a MAP is connected in Bluetooth  ? 
+    
+
+> Why semaphores are init to 0 (Ex :   if( SEMA_OK != StarRec_PAL_SemaInit( &wait4DataSema, 0 ) )) - CPBAPControl startparser()..
+
+> Difference between Legacy and Simple pairing ? will ask for pass word while service connect..
+                                                 Will share link key and connection will be done.                                                  
+
+> What was search alogoritham used in phonebook search ?
+
+> Where are The Call history and Vcards stored ?								
+  data registery.
+
+> Why Are Vcards stored in Flash ?								
+  Data should not be lost when power is on off..  
+
+
+> If a call is received in between a Phonebook Download, how to update the call history?
+  Chek size of phone book .
+  size of PB will be sent as event to application.
+								
+  if PBAP 1.2 device primary and secondry folder version changes then 
+
+> How to update Call history without using any botton?								
+
+>  How are multiple email accounts indicated in MAP profile?-- > MAS instances					
+   MAP instance..   
+
+> How many l2cap channels for avrcp 1.4 ? browsing and control ?
+  2 L2 CAP channels one for browsing and athor for control..
+
+
+> What is latest BT stack and what are the new features added on same  for PBAP MAP and HFP ??
+  					
+> How to find max of 3 number ?
+
+> Wrapper for malloc ?
+
+
+////////////// RAJ INTERVIEW QUESTION//////
+
+First round:
+1] Linked list how to find out if 2 linked list have an intersection, if have intersection find out the inetrsection node.
+Ans: > Take the length of both linked list.
+     > Get the longest snd traverse longets link till the difference of two list number.
+	 > once longet reaches difference, traverse both links till both not pointing null.
+
+2] c++: What is mutable in C++ and write down a program to demonstate its use. Where does a mutable variable (class member variable with mutable keyword) gets storred in memory.
+Ans: A mutable key word is used to make the variable inside a const function in class to be modifiable. 
+      Ex:
+	  #include <iostream>
+      #include <string>
+      using namespace std;
+
+      class Customer
+	  {
+	      int table_no;
+		  string name;
+		  mutable string place_order;
+		  mutable int bill;
+		  public:
+		  //constructor
+		  Customer(int no, string nam, string order, int am): table_no(no), name(nam), place_order(order),bill(am)
+		  {
+		      cout<<"inside constrcurtor"<<endl;
+		  }
+		  void change_order(string ord)const
+		  {
+		       place_order = ord;
+		  }
+		  void chang_bill(int am)
+		  {
+		     bill = am;
+		  }
+		  
+		  void disp_details(void)const
+		  {
+		      cout<<"table no - "<<table_no<<endl;
+		      cout<<"customer name - "<<name<<endl;  
+		      cout<<"place_order - "<<place_order<<endl;  
+		      cout<<"Bill - "<<bill<<endl;  
+		  }
+	  };
+	  
+	  main()
+	  {
+	     Customer c1(3, "PRINCE", "MEALS", 500);
+	     c1.change_order("CHAPPATHI");
+	     c1.chang_bill(300);
+	     c1.disp_details();
+	 }
+
+3] Bitwise program: Write a program to swap every alternate bits in a word.
+
+   Ans:
+   
+   number and with 0xAAAAAA and right shift to make all even bit as odd
+   nuumber and with 0x555555 and left shift by one position to make odd bit as even
+   or both results to get the swapped result.
+   
+   int data  = 234;
+   
+   //1010 1010 & GET EVEN BITS
+   //0110 1111
+	 ---------
+     0010 1010 >> 1
+-----------------------------------
+-----------------------------------
+	 
+//  0101 0101 & GET ODD BITS
+    0110 1111
+---------------
+    0100 0101 << 1
+-----------------------
+-----------------------
+
+	
+   //0101 
+   int EVE_ = 0xAAAAAAAA;
+   int ODD_ = 0x55555555;
+   
+   int ev_num = data & EVE_
+   int odd_num = data & ODD_
+   ev_num  >>= 1;
+   odd_num <<= 1;
+   
+   num = ev_num | odd_num;
+   
+   
+4] Program to find out if a number is a power of two. Where is this commonly used.
+  Ans 1:
+   while( num ! = 1)
+   (
+        if(nu %2)
+		{
+		   break;
+		   return (0)
+		}
+		else{
+		   num/=2;
+		}
+		return 1;
+   )
+Ans 2:
+All the power of 2 will have only one bit set. So if we count ymber set bits and if it is one then it is power of 2.
+
+  while(no)
+  {
+       cout += no & 1;
+	   no >>= 1;
+  }
+  if(count  == 1)
+  { 
+  return ("1"); //power of 2
+  }
+  else
+  {
+      return(0); // not power of 2.
+  }
+ 
+
+5] Write an optimized program to do string copy (source and destination pointers given). 
+hint: It should be done in one line.
+
+while(sou[i] != '\0')
+{
+  des[i] = sou[i];
+  i++;
+}
+des[i] = '\0';
+
+
+6] Write a customized memory allocation function myMalloc(), strictly adhering to the word boundary as specified.
+void *Mymalloc(size_t size)
+{
+	void *block;
+	block = sbrk(size);
+	if (block == (void*) -1)
+		return NULL;
+	return block;
+}
+More link: http://arjunsreedharan.org/post/148675821737/write-a-simple-memory-allocator
+
+7] What is QNX resource manager ?
+Ans: Resource manager is replacement of device driver(module) in Linux. But RM is like a user level application, whcih make use of 
+     native IPC(message passing). QNX resource amanger works based on path name space concept where in a path name space is registerd 
+	 RM, and process manager will get information that, functionalities over this path name space will be taken care by RM. 
+	 
+	 
+	 
+8] What is channels and connection in QNX and where is it used ? (i.e between process or between threads ?)
+9] How do we attach a running process to QNX momentics ? - channel_attach?
+10] Explain messaging mechanism in QNX (MsgSend(), recieve(), etc and blocking nature).
+11] Compiler optimization ? what is the compiler optimization implemented in your project.
+12] What would be your approach to improve the performance of a realtime system which takes 10ms now to a lesser time say 5ms.
+13] What would be your approach to reduce the memory foot print of a system (Software).
+
+Second round:
+1] Mostly to know the project experience. Will ask to draw the architecure of any project and explain.
+2] will ask about the tools used to capture requirements and design etc.
+3] Will have quistions on message queue, semaphores and all.
+4] Asked about shared memory, how to use it etc. Also asked the advantages and disadvatges of shared memory over message queue.
+5] Asked to write a program where two process/threads synchronized to each other, one process prints only the odd number and one process prints only the even number.
+6] Asked if given a choice to use C/C++ to develop a module, which one will be used and why ?
+
+
+Manager round:
+1] started with some technical quistions on bitwise. Asked to write a macro to reset a bit at position n.
+2] Asked about a project where where message queue is involved and asked to explain on how message queue's are communicating each other from the project perspective.
+3] Asked about the difference between pipe aand message queue.
+4] have many balls of 3 colours Red/Blue/Green all are mixed up, say RRBGBBGRG....etc
+write an algorithm to sort the balls such that first all 'R', then 'B' and then 'G' balls are present in queue.
+5] Have some 5 process, which is monitored by a mother process. Mother process should monitor the health of all the process if it is alive and should restart if they are stuck. How would you do this ? what would be the things used to achieve this ? (Means the OS entities used like semaphores or timers or message queue etc.)
+
+
+UST global:
+----------
+cpp-
+What is list, MAP and Vector ?
+How it is internally implelenemnted ?
+What is list ?
+What is namespace ?
+How it is implemented inernally ?
+C 11 and cpp14 ?
+
+
+Question: 
+How do you find out if an unsigned integer is a power of 2? Answer: The trick here is to know that an unsigned integer which is a power of 2 has only one of its bits as 1. So a simple solution would be to loop through the bits and count the number […]
+
+
+##Process:
+>> A process will have itsown data, stack heap and BSS segment. 
+>> This makes communcion bwtween each process difficult.
+>> fork is the system call to spawn a process.
+>> if n number of forks are usesd then 2^n-1 time child process will be cerated.
+
+>> A child and parent process will have same relative address(virtual adress mapped from Phycical address) but different absolute address.
+
+Fork() - will return a negative value if child creation is unsuccessfull.
+FOrk() - will return zero inside child process- if the fork system call creates child.
+Fork() - will return a positive intiger for fork sysy call inside parent process.
+	   
+  Wait() - is the syste call to halt until the execution of child process by parent process.
+  >> getpid()// to get pid of parent process.
+  >> cpid() // get child pid
+  >> When parent ptocesss in wait state, child has to execute exit() to come out of the parent process.
+
+PIPE is the IPC to communcte between child and parent process.
+
+
+Thread:
+A thred will have only stack ans register not shared with any other thread with same process. But thread will have same phisical memory. But proces will have different physical memmory.
+A thead will hae to use mutex or semaphore for to make code safe or protect the creitical section of the code.
+
+       int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
+                          void *(*start_routine) (void *), void *arg);
+
+
+
+
+
+Visteon:
+How it works when connect call makes mutliple times ?
+Conncet call with PIM service will check if the same instance is already conncetion wrt BT addrs and if it already connection in progress, udate same.
+
+Does data comes in sorted order from PBAP ?
+Ans: Call list is updated dynamically wrt calls in chronologica order. Phone book data can be requested by ascending or descending order.
+
+How to get count of totoal number of SMS or Phone contacts ?
+MaxListCount is set to zero to get the total count of phone book.
+
+Is there any time out in stack for message download or connect call ?
+
+////Wipro
+Difference between static and dynamic casting ?
+static cast give assurance that, casting is legal. Other wise it will give error.
+Why use MAP instead of LIST or set in project to store the connection pointer ?
+
+
+Where Vector is used in project ?
+
+Does class declararion takes any lmemory space?
+
+What is SOC on the board ?
+
+System On Chip is th combined hardware module contains processor, COnroller, drivers etc.
+
+
+
+What is circular buffer?
+What willl be done if data is overcrowded with circular buffer ?
+
+
+
+
+intel////
+what are the advantage of using callback function ?
+Mainly it helps to avoid the server programs not to compile again when client changes the function name. So it can register cllback name each time during start up.\
+Ex if call back is changed from Make_call to Dial(), Customer whcih make this call when an event receves can make Dial call, since this registerd newly with Server code.
+
+
+How to register the call back function with application ?
+How to toggle a bit in number?
+  #define MACRO_TOGLE(dat pos)   dat ^=(1<<pos-1)
+
+What is array of function pointers ?
+
+typedef (void*)(*Callback)(void*)
+callback fun[10]; // array of function pointers
+ or
+void* (*Callback[10]) void*
+
+
+How to get back trace or who is generating back trace ?
+Image of curenlty processsed process can be generated during crash.
+
+wtite function for finding strlen ?
+#include<stdio.h>
+#include <string.h>
+  int strle(const char*ptr );
+
+
+void main()
+{
+    char arr [] = "PRINCE";
+    printf("%d",strle(arr));
+}
+
+   int strle(const char*ptr )
+    {
+       char *temp = ptr;
+       while(*temp != '\0')  
+       {
+           temp++;
+        }
+         return(temp-ptr);
+
+
+
+What is differnce between NULL and \0?
+#define NULL (void *)0
+
+NULL is defined as const void pointer 
+\0 is intiger equal to 0.
+
+COnnection prorcess of HFP or PBAP after connection you know the  device.
+WHat will hapen if we pass a global varibale as argument t another function ?
+Ans: If the variable is declared as local, then variable will be local and print local varibale value.
+
+Were does EV3 EV4 packets are getting saved ?
+
+Where does mutex is used in code?
+
+What is use of Link key?
+
+With What SDP is performed ?
+
+
+>>Structure in CPP
+
+C++ Structure :-
+1. In C++ structure declaration functions can also be declared
+
+2. The members declared in a C++ structure is public by default
+
+3. While declaring an object the keyword ‘struct’ is omitted in C++
+
+////Sasken //
+>> What is the ersponse of SABM 
+>> How many L2CAP channels connected if A2DP, MAP and PBAP and HFP are connected ?
+>> What is page time out and link loss ?
+>> WHat are features of MAP 1.2 and PBAP 1.2 ?
+>> What is SRM ? How does it works ?
+>> How Protocol service multiplexer works ?
+>> How many HFP connections are possible in HU ?
+>> What is unique pointer ?
+>> what is out put of-c
+    static char dat = 0;
+	for (;i<=128;i++)
+	{
+	    printf("%d", i);
+	}
+	since default system take it as 
+>> Is char is default signed or unsigned ?
+   Implementation specific. 
+>> Why use iterrators in cpp, instead of pointers ?
+  Ans: since using pointer data can be accessed more faster.
+
+SBC - used for Audio
+mSBC - Wide Band Speach.
+===========
+
+Link Loss
+
+A connection can break down due to various reasons such as a device moving out of range, encountering severe interference or a power failure condition. Since this can happen without any prior warning, it is important to monitor the link on both the master and the slave side to avoid possible collisions when the logical transport address (see Section 4.2) is reassigned to another slave. To be able to detect link loss, both the master and the slave shall use a link supervision timer, T supervision. Upon reception of a valid packet header with one of the slave's addresses (see Section 4.2) on the physical link, the timer shall be reset. If at any time in CONNECTION state, the timer reaches the supervisionTO value, the connection shall be considered disconnected. The same link supervision timer shall be used for SCO, eSCO, and ACL logical transports. The timeout period, supervisionTO, is negotiated by the Link Manager. Its value shall be chosen so that the supervision timeout will be longer than hold and sniff periods.
+
+
+///Page time out//
+
+2.4   PAGE TIMEOUT (0x04)
+The Page Timeout error code indicates that a page timed out because of the Page Timeout configuration parameter. This error code may occur only with the Remote_Name_Request and Create_Connection commands.
+
+
+How to find out data missing in A2DP ?
+
+//Robert Bosch
+
+>> What will be the size of class derived from base class ?
+   >> apart from priv or public or protected, space will be allocated for derived class..
+
+>> Write a program with same functions with different implentation.(using virtual, implemnt method in twomderived classes)
+    
+>> How mapping of different functions hapening in Vtable ?
+   During object creation, compiler will fill the vtable of derived class with funtion pointers of virtual functions. And vptr is updated with address of vtable.
+   
+   
+>> If first derived class again derived, then is it opssible to make use of base class object for poymorphisam ?
+ Yes. It can be used since same vptr will be availble with 3rd generation of derivation
+    
+
+>> What is the size of the class with virtual function ?
+   virtual function will add vptr pointer size with class size.
+
+>> Does vtable is created will be added with size of class size ?
+   No vtable will not be added to sze of class size.
+
+>> Inside class is padding is affeted?
+  Ans: Yes padding will be affected with in class parameters.
+        except static variable. static will be omitted.
+		
+>> What is size of derived class ? Does the base class variables also getting added with size of class ?
+   Ans: Regardless of how derived class derived from base, size will be added size of base + derived.
+
+>> If you declare static variable inside class what is size of class ?
+   Size of empty class is default one and if a static is included then size will not affect class size.
+   
+
+>> How does size of pointer is calculated ?
+
+>> If static variable is declare inside structure, what will be size of struct ?
+   Ans: If static varibale is declared in class, it will not add to total size of the class.
+        ** Structre cannot have static variable declared inside structure.
+		** 
+   Ex:
+       class test
+	   {
+	       static int a;
+	   };
+	   
+	   main()
+	   {
+	      cout <<sizeof(test)<<endl; // this will print 1 byte. Empty class is 1 byte of size.
+		                             // 
+	   }
+   
+
+>> More on dbus ?
+
+>> What is sieze of class if we take size of inherited class?
+
+   Ans: It will be including size of variables in base class + derived class.
+
+
+//size of intger ///
+
+char is 8 bits
+short is 16 bits
+int is 16 bits on 16-bit systems, and 32 bits on both 32- and 64-bit systems
+long may be either 32 or 64 bits
+
+>> If we have a 64 bit processor, it can process up to 8 bytes per mechine cycle. So address also will be 8 byte.
+>> or it can be 8*8 - 64 bits.
+
+So when we declare a class with virtial function, size of 
+
+
+// N-BIT PROCESSOR///
+In the most basic sense, an n-bit processor has an ALU which is capable of handling at a time n-bit sized operands. So, usually the processor will have an n-bit wide data bus (note: not is every case like the 8088 which was a 16 bit processor but the “external” data bus was of 8 bit only) and the registers’ size of n-bits too.
+
+Note that an n-bit processor doesn’t necessarily supports memory of up to 2^n bytes (i.e. it may also support higher memory interfacing) since size of accessible memory depends on width of address bus and that it is not always true that an n-bit processor will have an n-bit wide address bus.
+
+/////SIGNED AND UNSIGEND CHAR////
+Instead of writing
+
+signed char name = ‘a’;
+you can simply write it as :
+
+char name = ‘a’;
+but in case of unsigned char you need to use ‘unsigned’ keyword.
+
+unsigned char name = ‘a’;
+The size of both is same i.e. 1 byte or 8 bits.
+ASCII table has 128 characters ranging with values from 0 to 127. The remaining 127 characters is known as extended ASCII character set.
+In signed char, the extended set take value from -128 to -1 whereas in unsigned char it take value from 128 to 255.
+Thus the range of signed char is -128 to 127 whereas that of unsigned char is 0 to 255.
+
+If you try to give value 128 to signed char, it will take value corresponding to other side of range i.e. -128. For signed char the value next to 127 is -128 like in clock after 12 comes 1 and so on. :D
+Similar if you try to give value 256 to unsigned char, it will take value 0.
+
+Ex:
+// Default if we declare char it is considered as signed. Size of char still be 1 byte and can extent from -128 to 127.
+// But if we keep unsigned cghar it can span from 0 ro 255.
+
+#include <stdio.h>
+
+int main()
+{
+    unsigned char a = 129;
+    printf("value od a is  %d: ", a );
+    return 0;
+}
+Output:
+129
+
+int main()
+{
+    char a = 129; or signed char a =129;
+    printf("value od a is  %d: ", a );
+    return 0;
+}
+output:
+-127
+
+////Where does vtable is stored in memeory ?
+
+Where is the vtable (itself) stored is implementation specific (compiler, linker, operating-system specific). But it is often stored (like literal strings are) in the code segment of your executable. So objects generally (i.e. without multiple inheritance) start with a _vptr pointer pointing to their vtable. With multiple or virtual inheritance you could have several vtable pointers.
+
+As commented, you should not care about these details. If you really care, ask your compiler to dump internal representations or emitted assembly code. (e.g. compile with g++ -fdump-tree-all -fverbose-asm -S)
+
+>> Delete "this" pointer inside a destructor will lead to indefenite loop.
+    
+	
+    Ans:> delete(this) - >internally call this->~destructor()->delete(this)->....
+	       So never delete this inside destructor..
+		   this is still a varibale initialised inside stack for class object. So just like other when scope goes out, this will get deleted incase if we create object directly.
+		   Otherwise if we create object using "new" operator, we need to have 
+
+
+	
+========
+Hard and soft real time system ?
+How to improve boot time of a system ?
+Ans: By reducing kernel size, so loading time can be reduced..
+
+Is it possible to pass address of static variable to another file ?
+Ans: yes static variable address can be passed as argument to another file..
+
+What is register in c ?
+Is it possible get register always ?
+
+How to make sure that register always is recived ?
+> Ans:
+    It tells the compiler to try to use a CPU register, instead of RAM, to store the variable. Registers are in the CPU and much faster to access than RAM. But it's only a suggestion to the compiler, and it may not follow through.
+	TO make sure that the registers are allways read, we need to use volatile keyword. By using volatile compiler will make sure that data is read from 
+	register always without optimizing itk.
+	
+	Ex:
+	volatile int *const reg = (volatile int*)0x0020;
+	while(*reg == 0)
+	{
+	    //loop;
+	}
+	mov ptr, 0x0020
+	loop
+	  mov a, @ptr // move data from ptr to accumulator and check before looping...
+	  bz loop.
+	  	  
+	  Register is a storage class, and C doesn’t allow multiple storage class specifiers for a variable
+	  
+	  https://barrgroup.com/Embedded-Systems/How-To/C-Volatile-Keyword
+
+
+What is boot loader ?
+Ans: Bootloader is a piece of code that runs before any operating system is running.
+     Bootloader are used to boot other operating systems, usually each operating system has a set of bootloaders specific for it.
+     Bootloaders usually contain several ways to boot the OS kernel and also contain commands for debugging and/or modifying the kernel environment.
+
+
+
+If two process are having same priority how shceduler will decide, whcih one will have to be executed first ?
+Ans: 
+
+Who is doing structure padidng ?
+Compiler is doing structure padding..
+
+Why we need to avoid padding and how to avoid padding ?
+Ans:
+structure paddding can be avoided by using a preprocessor directive #pragma 1 the compiler will alocate memory in multiples of one
+
+
+What type of data structre will be used for stack ?
+Ans: Linked list can be used for creating a stack.
+
+What is size of intiger in 64 bit processor ? 
+
+Ans: Size of intiger is mostly depends on compiler implementation.
+     The char type uses ASCII encoding. So it is one byte always.
+	 
+	 
+What is cashe memory and why not use RAM insted of cashe ?
+Ans:
+Cache memory is a small-sized type of volatile computer memory that provides high-speed data access to a processor and stores frequently used computer programs, applications and data. It is the fastest memory in a computer, and is typically integrated onto the motherboard and directly embedded in the processor or main random access memory (RAM).
+
+
+/////////////
+>> compare two strings.
+   while (*first == *second) {
+      if (*first == '\0' || *second == '\0')
+         break;
+ 
+      first++;
+      second++;
+   }
+ 
+   if (*first == '\0' && *second == '\0')
+      return 0;
+   else
+      return -1;
+}
+
+
+
+>> print a linked reverse.
+  void revrse(struct node *head)
+  {
+	  if(head == NULL)
+		  return;
+	  revrse(head->next);
+	  printf("%d", head->data)  ;
+  }
+
+>> Design pttern  - Builder and Abstract design pattern--
+
+>> 52 cards to 4 people, and need to be shuffled. - What is algoritham and data structure ?
+>> How to print the number of repeated characters in an array ?
+>> What is data structre that hold singlton design pattern ?
+
+
+>> How to differentiate async and sync data, in data packet  ?
+Synchronous vs. Asynchronous
+Synchronous data transfer: sender and receiver use the same clock signal
+     supports high data transfer rate
+     needs clock signal between the sender and the receiver
+     requires master/slave configuration
+Asynchronous data transfer: sender provides a synchronization signal to the receiver before starting the transfer of each message
+    does not need clock signal between the sender and the receiver
+    slower data transfer rate
+
+
+
+
+>> What does defines the range of bluetooth data reception ?
+   By icreasing the frequency of carrier, data can be transmitted long distance also by increasing carrier frequency length of the antenna can also reduced.
+   98.3FM means 98.3 MHz frequency modulated of data transmission.
+
+
+>>https://www.toptal.com/c-plus-plus/interview-questions - > improtant cpp questions....
